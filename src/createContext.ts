@@ -1,8 +1,10 @@
 import { stringify } from './interop'
+import { runInContext } from './runner'
 import * as list from './stdlib/list'
 import { list_to_vector } from './stdlib/list'
 import * as misc from './stdlib/misc'
 import * as parser from './stdlib/parser'
+import * as testlib from './stdlib/testlib.source'
 import { Context, CustomBuiltIns, Value } from './types'
 
 const GLOBAL = typeof window === 'undefined' ? global : window
@@ -74,6 +76,17 @@ export const importExternalSymbols = (context: Context, externalSymbols: string[
   })
 }
 
+export const importLibrary = (context: Context, externalLibrary: object) => {
+  ensureGlobalEnvironmentExist(context)
+
+  for (const builtinName in externalLibrary) {
+    if (externalLibrary.hasOwnProperty(builtinName)) {
+      const fun = externalLibrary[builtinName].toString()
+      runInContext(fun, context, { scheduler: 'preemptive' }).then(obj => undefined)
+    }
+  }
+}
+
 /**
  * Imports builtins from standard and external libraries.
  */
@@ -105,6 +118,8 @@ export const importBuiltins = (context: Context, externalBuiltIns: CustomBuiltIn
     for (const prop of props) {
       defineBuiltin(context, 'math_' + prop, Math[prop])
     }
+
+    importLibrary(context, testlib)
   }
 
   if (context.chapter >= 2) {

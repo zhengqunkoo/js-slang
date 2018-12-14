@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Can run loaded source lib 1`] = `
+Object {
+  "status": "finished",
+  "value": 120,
+}
+`;
+
+exports[`Can run loaded source lib 2`] = `Array []`;
