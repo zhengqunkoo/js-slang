@@ -49,7 +49,12 @@ export function boolOrErr(candidate: any, line: number, column: number) {
   }
 }
 
-export function unaryOp(operator: UnaryOperator, argument: any, line: number, column: number) {
+export function unaryOp(
+  operator: UnaryOperator,
+  argument: any,
+  line: number,
+  column: number
+) {
   const error = rttc.checkUnaryExpression(
     create.locationDummyNode(line, column),
     operator,
@@ -65,10 +70,9 @@ export function unaryOp(operator: UnaryOperator, argument: any, line: number, co
 export function evaluateUnaryExpression(operator: UnaryOperator, value: any) {
   if (operator === '!') {
     return !value
-  } else if (operator === '-') {
-    return -value
   } else {
-    return +value
+    // has to be -
+    return -value
   }
 }
 
@@ -116,8 +120,6 @@ export function evaluateBinaryExpression(operator: BinaryOperator, left: any, ri
       return left > right
     case '>=':
       return left >= right
-    default:
-      return undefined
   }
 }
 

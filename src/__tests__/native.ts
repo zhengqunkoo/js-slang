@@ -1,6 +1,7 @@
 import { stripIndent } from 'common-tags'
 import { parseError, runInContext } from '../index'
 import { mockContext } from '../mocks/context'
+import { expectParsedError } from '../utils/testing'
 
 test('test increasing time limit for functions', () => {
   const code = stripIndent`
@@ -98,4 +99,16 @@ test('test increasing time limit for while loops', () => {
       expect(longerTimeTaken).toBeGreaterThanOrEqual(10000)
     })
   })
+})
+
+test("Test calling a builtin in tail position that doesn't return a function", () => {
+  return expectParsedError(
+    stripIndent`
+    function f() {
+      return getNonFunction()();
+    }
+    f();
+  `,
+    { chapter: 1, testBuiltins: { 'getNonFunction()': () => 1 }, native: true }
+  ).toMatchInlineSnapshot(`"Line 2: Calling non-function value 1."`)
 })

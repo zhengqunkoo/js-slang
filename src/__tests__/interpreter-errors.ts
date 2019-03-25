@@ -1192,6 +1192,16 @@ test('Type error when assigning property of function', () => {
   ).toMatchInlineSnapshot(`"Line 4: Expected object or array, got function."`)
 })
 
+test('Type error with nonnumber after - operator, error line at -, not at nonnumber.', () => {
+  return expectParsedError(
+    stripIndent`
+    -
+    "string";
+    `,
+    { chapter: 1, native: true }
+  ).toMatchInlineSnapshot(`"Line 1: Expected number, got string."`)
+})
+
 test('Type error with non boolean in if statement, error line at if statement, not at 1', () => {
   return expectParsedError(
     stripIndent`
@@ -1212,6 +1222,6 @@ test('Type error with <number> * <nonnumber>, error line at <number>, not <nonnu
     *
     'string';
     `,
-    { chapter: 1 }
+    { chapter: 1, native: true }
   ).toMatchInlineSnapshot(`"Line 1: Expected number on right hand side of operation, got string."`)
 })
