@@ -854,6 +854,48 @@ Object {
 }
 `;
 
+exports[`passing in undefined to function works: expectResult 1`] = `
+Object {
+  "alertResult": Array [],
+  "code": "function f(x) {
+  return x;
+}
+f(undefined);",
+  "displayResult": Array [],
+  "errors": Array [],
+  "parsedErrors": "",
+  "result": undefined,
+  "resultStatus": "finished",
+  "transpiled": "const native = $$NATIVE_STORAGE;
+const callIfFuncAndRightArgs = native.operators.get(\\"callIfFuncAndRightArgs\\");
+const boolOrErr = native.operators.get(\\"boolOrErr\\");
+const wrap = native.operators.get(\\"wrap\\");
+const unaryOp = native.operators.get(\\"unaryOp\\");
+const binaryOp = native.operators.get(\\"binaryOp\\");
+const throwIfTimeout = native.operators.get(\\"throwIfTimeout\\");
+const setProp = native.operators.get(\\"setProp\\");
+const getProp = native.operators.get(\\"getProp\\");
+(( <globals redacted> ) => {
+  return (() => {
+    const f = wrap(x => {
+      return {
+        isTail: false,
+        value: x
+      };
+    }, \\"function f(x) {\\\\n  return x;\\\\n}\\");
+    const lastStatementResult = eval(\\"callIfFuncAndRightArgs(f, 4, 0, undefined);\\");
+    native.globals.set(\\"f\\", {
+      kind: \\"const\\",
+      value: f
+    });
+    return lastStatementResult;
+  })();
+})();
+",
+  "visualiseListResult": Array [],
+}
+`;
+
 exports[`primitives toString matches up with JS: expect to match JS 1`] = `
 Object {
   "alertResult": Array [],

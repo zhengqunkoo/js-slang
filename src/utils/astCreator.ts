@@ -139,3 +139,17 @@ export const arrayExpression = (elements: es.Expression[]): es.ArrayExpression =
   type: 'ArrayExpression',
   elements
 })
+
+/**
+ * Create an AST node from a Source value.
+ *
+ * @param value any valid Source value (number/string/boolean/Closure)
+ * @returns {Node}
+ */
+export const createNode = (value: any): es.Expression => {
+  if (value === undefined) {
+    return identifier('undefined')
+  } else {
+    return literal(value)
+  }
+}

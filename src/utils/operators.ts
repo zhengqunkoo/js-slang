@@ -49,12 +49,7 @@ export function boolOrErr(candidate: any, line: number, column: number) {
   }
 }
 
-export function unaryOp(
-  operator: UnaryOperator,
-  argument: any,
-  line: number,
-  column: number
-) {
+export function unaryOp(operator: UnaryOperator, argument: any, line: number, column: number) {
   const error = rttc.checkUnaryExpression(
     create.locationDummyNode(line, column),
     operator,

@@ -4,7 +4,7 @@ import Closure from './closure'
 import * as constants from './constants'
 import * as errors from './interpreter-errors'
 import { Context, Environment, Frame, Value } from './types'
-import { createNode } from './utils/node'
+import { createNode } from './utils/astCreator'
 import { evaluateBinaryExpression, evaluateUnaryExpression } from './utils/operators'
 import * as rttc from './utils/rttc'
 

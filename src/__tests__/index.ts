@@ -389,3 +389,15 @@ test('test true || true', () => {
 test('test || shortcircuiting', () => {
   return expectToMatchJS('true || 1();', { native: true })
 })
+
+test('passing in undefined to function works', () => {
+  return expectResult(
+    stripIndent`
+    function f(x) {
+      return x;
+    }
+    f(undefined);
+  `,
+    { native: true }
+  ).toBe(undefined)
+})
