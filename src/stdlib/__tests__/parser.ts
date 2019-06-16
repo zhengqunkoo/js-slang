@@ -135,33 +135,6 @@ test('Parses fibonacci', () => {
   )
 })
 
-test('Parses object notation', () => {
-  return snapshotSuccess(
-    stripIndent`
-    stringify(parse("let x = {a: 5, b: 10, 'key': value};"), undefined, 2);
-  `,
-    { chapter: 100 }
-  )
-})
-
-test('Parses property access', () => {
-  return snapshotSuccess(
-    stripIndent`
-    stringify(parse("a[b]; a.b; a[5]; a['b'];"), undefined, 2);
-  `,
-    { chapter: 100 }
-  )
-})
-
-test('Parses property assignment', () => {
-  return snapshotSuccess(
-    stripIndent`
-    stringify(parse("a[b] = 5; a.b = value; a[5] = 'value'; a['b'] = 42;"), undefined, 2);
-  `,
-    { chapter: 100 }
-  )
-})
-
 test('Parses loops', () => {
   return snapshotSuccess(
     oneLine`
