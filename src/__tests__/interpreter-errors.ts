@@ -146,9 +146,7 @@ test('Nice errors when errors occur inside builtins', () => {
     parse_int("10");
   `,
     { chapter: 4 }
-  ).toMatchInlineSnapshot(
-    `"Line 1: Error: parse_int expects two arguments a string s, and a positive integer i between 2 and 36, inclusive."`
-  )
+  ).toMatchInlineSnapshot(`"Line 1: Expected 2 arguments, but got 1."`)
 })
 
 test('Nice errors when errors occur inside builtins', () => {
@@ -622,6 +620,37 @@ test('Error when calling arrow function in tail call with too many arguments', (
   `,
     { native: true }
   ).toMatchInlineSnapshot(`"Line 2: Expected 0 arguments, but got 1."`)
+})
+
+test('Error when calling builtin function in with too many arguments', () => {
+  return expectParsedError(
+    stripIndent`
+    is_number(1, 2, 3);
+  `,
+    { native: true }
+  ).toMatchInlineSnapshot(`"Line 1: Expected 1 arguments, but got 3."`)
+})
+
+test('Error when calling builtin function in with too few arguments', () => {
+  return expectParsedError(
+    stripIndent`
+    parse_int("");
+  `,
+    { native: true }
+  ).toMatchInlineSnapshot(`"Line 1: Expected 2 arguments, but got 1."`)
+})
+
+test('No error when calling list function in with variable arguments', () => {
+  return expectResult(
+    stripIndent`
+    list();
+    list(1);
+    list(1, 2, 3);
+    list(1, 2, 3, 4, 5, 6, 6);
+    1;
+  `,
+    { native: true, chapter: 2 }
+  ).toMatchInlineSnapshot(`1`)
 })
 
 test('Error when redeclaring constant', () => {

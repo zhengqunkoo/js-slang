@@ -554,6 +554,112 @@ const globals = $NATIVE_STORAGE.globals;
 }
 `;
 
+exports[`Error when calling builtin function in with too few arguments: expectParsedError 1`] = `
+Object {
+  "alertResult": Array [],
+  "code": "parse_int(\\"\\");",
+  "displayResult": Array [],
+  "errors": Array [
+    InvalidNumberOfArguments {
+      "calleeStr": "parse_int",
+      "expected": 2,
+      "got": 1,
+      "location": SourceLocation {
+        "end": Position {
+          "column": 13,
+          "line": 1,
+        },
+        "start": Position {
+          "column": 0,
+          "line": 1,
+        },
+      },
+      "severity": "Error",
+      "type": "Runtime",
+    },
+  ],
+  "parsedErrors": "Line 1: Expected 2 arguments, but got 1.",
+  "result": undefined,
+  "resultStatus": "error",
+  "transpiled": "const native = $$NATIVE_STORAGE;
+const callIfFuncAndRightArgs = native.operators.get(\\"callIfFuncAndRightArgs\\");
+const boolOrErr = native.operators.get(\\"boolOrErr\\");
+const wrap = native.operators.get(\\"wrap\\");
+const unaryOp = native.operators.get(\\"unaryOp\\");
+const binaryOp = native.operators.get(\\"binaryOp\\");
+const throwIfTimeout = native.operators.get(\\"throwIfTimeout\\");
+const setProp = native.operators.get(\\"setProp\\");
+const getProp = native.operators.get(\\"getProp\\");
+let lastStatementResult = undefined;
+const globals = $NATIVE_STORAGE.globals;
+(( <globals redacted> ) => {
+  return (() => {
+    {
+      {
+        lastStatementResult = eval(\\"callIfFuncAndRightArgs(parse_int, 1, 0, \\\\\\"\\\\\\");\\");
+      }
+    }
+    return lastStatementResult;
+  })();
+})();
+",
+  "visualiseListResult": Array [],
+}
+`;
+
+exports[`Error when calling builtin function in with too many arguments: expectParsedError 1`] = `
+Object {
+  "alertResult": Array [],
+  "code": "is_number(1, 2, 3);",
+  "displayResult": Array [],
+  "errors": Array [
+    InvalidNumberOfArguments {
+      "calleeStr": "is_number",
+      "expected": 1,
+      "got": 3,
+      "location": SourceLocation {
+        "end": Position {
+          "column": 18,
+          "line": 1,
+        },
+        "start": Position {
+          "column": 0,
+          "line": 1,
+        },
+      },
+      "severity": "Error",
+      "type": "Runtime",
+    },
+  ],
+  "parsedErrors": "Line 1: Expected 1 arguments, but got 3.",
+  "result": undefined,
+  "resultStatus": "error",
+  "transpiled": "const native = $$NATIVE_STORAGE;
+const callIfFuncAndRightArgs = native.operators.get(\\"callIfFuncAndRightArgs\\");
+const boolOrErr = native.operators.get(\\"boolOrErr\\");
+const wrap = native.operators.get(\\"wrap\\");
+const unaryOp = native.operators.get(\\"unaryOp\\");
+const binaryOp = native.operators.get(\\"binaryOp\\");
+const throwIfTimeout = native.operators.get(\\"throwIfTimeout\\");
+const setProp = native.operators.get(\\"setProp\\");
+const getProp = native.operators.get(\\"getProp\\");
+let lastStatementResult = undefined;
+const globals = $NATIVE_STORAGE.globals;
+(( <globals redacted> ) => {
+  return (() => {
+    {
+      {
+        lastStatementResult = eval(\\"callIfFuncAndRightArgs(is_number, 1, 0, 1, 2, 3);\\");
+      }
+    }
+    return lastStatementResult;
+  })();
+})();
+",
+  "visualiseListResult": Array [],
+}
+`;
+
 exports[`Error when calling function from member expression with too many arguments - verbose: expectParsedError 1`] = `
 Object {
   "alertResult": Array [],
@@ -2721,8 +2827,10 @@ Object {
   "code": "parse_int(\\"10\\");",
   "displayResult": Array [],
   "errors": Array [
-    ExceptionError {
-      "error": [Error: parse_int expects two arguments a string s, and a positive integer i between 2 and 36, inclusive.],
+    InvalidNumberOfArguments {
+      "calleeStr": "parse_int",
+      "expected": 2,
+      "got": 1,
       "location": SourceLocation {
         "end": Position {
           "column": 15,
@@ -2737,7 +2845,7 @@ Object {
       "type": "Runtime",
     },
   ],
-  "parsedErrors": "Line 1: Error: parse_int expects two arguments a string s, and a positive integer i between 2 and 36, inclusive.",
+  "parsedErrors": "Line 1: Expected 2 arguments, but got 1.",
   "result": undefined,
   "resultStatus": "error",
   "visualiseListResult": Array [],
@@ -2769,6 +2877,49 @@ Object {
   "parsedErrors": "Line 1: ParseError: SyntaxError: Unterminated string constant (1:0)",
   "result": undefined,
   "resultStatus": "error",
+  "visualiseListResult": Array [],
+}
+`;
+
+exports[`No error when calling list function in with variable arguments: expectResult 1`] = `
+Object {
+  "alertResult": Array [],
+  "code": "list();
+list(1);
+list(1, 2, 3);
+list(1, 2, 3, 4, 5, 6, 6);
+1;",
+  "displayResult": Array [],
+  "errors": Array [],
+  "parsedErrors": "",
+  "result": 1,
+  "resultStatus": "finished",
+  "transpiled": "const native = $$NATIVE_STORAGE;
+const callIfFuncAndRightArgs = native.operators.get(\\"callIfFuncAndRightArgs\\");
+const boolOrErr = native.operators.get(\\"boolOrErr\\");
+const wrap = native.operators.get(\\"wrap\\");
+const unaryOp = native.operators.get(\\"unaryOp\\");
+const binaryOp = native.operators.get(\\"binaryOp\\");
+const throwIfTimeout = native.operators.get(\\"throwIfTimeout\\");
+const setProp = native.operators.get(\\"setProp\\");
+const getProp = native.operators.get(\\"getProp\\");
+let lastStatementResult = undefined;
+const globals = $NATIVE_STORAGE.globals;
+(( <globals redacted> ) => {
+  return (() => {
+    {
+      {
+        callIfFuncAndRightArgs(list, 1, 0);
+        callIfFuncAndRightArgs(list, 2, 0, 1);
+        callIfFuncAndRightArgs(list, 3, 0, 1, 2, 3);
+        callIfFuncAndRightArgs(list, 4, 0, 1, 2, 3, 4, 5, 6, 6);
+        lastStatementResult = eval(\\"1;\\");
+      }
+    }
+    return lastStatementResult;
+  })();
+})();
+",
   "visualiseListResult": Array [],
 }
 `;

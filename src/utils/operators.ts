@@ -29,6 +29,11 @@ export function callIfFuncAndRightArgs(
   })
   if (typeof candidate === 'function') {
     if (candidate.transformedFunction === undefined) {
+      const expectedLength = candidate.length
+      const receivedLength = args.length
+      if (!candidate.hasVarArgs && expectedLength !== receivedLength) {
+        throw new InvalidNumberOfArguments(dummy, expectedLength, receivedLength)
+      }
       try {
         return candidate(...args)
       } catch (error) {
@@ -150,19 +155,20 @@ export const callIteratively = (f: any, ...args: any[]) => {
     }
     if (f.transformedFunction! !== undefined) {
       f = f.transformedFunction
-      const expectedLength = f.length
-      const receivedLength = args.length
-      if (expectedLength !== receivedLength) {
-        throw new InvalidNumberOfArguments(
-          callExpression(locationDummyNode(line, column), args, {
-            start: { line, column },
-            end: { line, column }
-          }),
-          expectedLength,
-          receivedLength
-        )
-      }
     }
+    const expectedLength = f.length
+    const receivedLength = args.length
+    if (!f.hasVarArgs && expectedLength !== receivedLength) {
+      throw new InvalidNumberOfArguments(
+        callExpression(locationDummyNode(line, column), args, {
+          start: { line, column },
+          end: { line, column }
+        }),
+        expectedLength,
+        receivedLength
+      )
+    }
+
     const res = f(...args)
     if (res === null || res === undefined) {
       return res

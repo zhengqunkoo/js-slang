@@ -185,15 +185,24 @@ const setVariable = (context: Context, name: string, value: any) => {
 
 const checkNumberOfArguments = (
   context: Context,
-  callee: Closure,
+  callee: Closure | Value,
   args: Value[],
   exp: es.CallExpression
 ) => {
-  if (callee.node.params.length !== args.length) {
-    return handleRuntimeError(
-      context,
-      new errors.InvalidNumberOfArguments(exp, callee.node.params.length, args.length)
-    )
+  if (callee instanceof Closure) {
+    if (callee.node.params.length !== args.length) {
+      return handleRuntimeError(
+        context,
+        new errors.InvalidNumberOfArguments(exp, callee.node.params.length, args.length)
+      )
+    }
+  } else {
+    if (!callee.hasVarArgs && callee.length !== args.length) {
+      return handleRuntimeError(
+        context,
+        new errors.InvalidNumberOfArguments(exp, callee.length, args.length)
+      )
+    }
   }
   return undefined
 }
@@ -609,6 +618,7 @@ export function* apply(
         result = new ReturnValue(undefined)
       }
     } else if (typeof fun === 'function') {
+      checkNumberOfArguments(context, fun, args, node!)
       try {
         result = fun.apply(thisContext, args)
         break
