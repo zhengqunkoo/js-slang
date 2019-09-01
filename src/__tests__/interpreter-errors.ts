@@ -647,7 +647,73 @@ test('No error when calling list function in with variable arguments', () => {
     list(1);
     list(1, 2, 3);
     list(1, 2, 3, 4, 5, 6, 6);
-    1;
+  `,
+    { native: true, chapter: 2 }
+  ).toMatchInlineSnapshot(`
+Array [
+  1,
+  Array [
+    2,
+    Array [
+      3,
+      Array [
+        4,
+        Array [
+          5,
+          Array [
+            6,
+            Array [
+              6,
+              null,
+            ],
+          ],
+        ],
+      ],
+    ],
+  ],
+]
+`)
+})
+
+test('No error when calling display function in with variable arguments', () => {
+  return expectResult(
+    stripIndent`
+    display();
+    display(1, 2);
+    display(1, 2, 3);
+  `,
+    { native: true, chapter: 2 }
+  ).toMatchInlineSnapshot(`1`)
+})
+
+test('No error when calling stringify function in with variable arguments', () => {
+  return expectResult(
+    stripIndent`
+    stringify();
+    stringify(1, 2);
+    stringify(1, 2, 3);
+  `,
+    { native: true, chapter: 2 }
+  ).toMatchInlineSnapshot(`"1"`)
+})
+
+test('No error when calling math_max function in with variable arguments', () => {
+  return expectResult(
+    stripIndent`
+    math_max();
+    math_max(1, 2);
+    math_max(1, 2, 3);
+  `,
+    { native: true, chapter: 2 }
+  ).toMatchInlineSnapshot(`3`)
+})
+
+test('No error when calling math_min function in with variable arguments', () => {
+  return expectResult(
+    stripIndent`
+    math_min();
+    math_min(1, 2);
+    math_min(1, 2, 3);
   `,
     { native: true, chapter: 2 }
   ).toMatchInlineSnapshot(`1`)
