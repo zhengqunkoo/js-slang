@@ -1,4 +1,4 @@
-import { getName } from './compiler'
+import { getName, OpCodes } from './compiler'
 
 const LDF_MAX_OS_SIZE_OFFSET = 1
 const LDF_ADDRESS_OFFSET = 2
@@ -374,7 +374,7 @@ function show_heap_value(address: number) {
 
 const M: Array<() => void> = []
 
-M[START] = () => {
+M[OpCodes.START] = () => {
   A = 1 // first OS only needs to hold one closure
   NEW_OS()
   OS = RES
@@ -384,7 +384,7 @@ M[START] = () => {
   PC = PC + 1
 }
 
-M[LDCN] = () => {
+M[OpCodes.LDCN] = () => {
   A = P[PC + LDCN_VALUE_OFFSET]
   NEW_NUMBER()
   A = RES
@@ -392,7 +392,7 @@ M[LDCN] = () => {
   PC = PC + 2
 }
 
-M[LDCB] = () => {
+M[OpCodes.LDCB] = () => {
   A = P[PC + LDCB_VALUE_OFFSET]
   NEW_BOOL()
   A = RES
@@ -400,14 +400,14 @@ M[LDCB] = () => {
   PC = PC + 2
 }
 
-M[LDCU] = () => {
+M[OpCodes.LDCU] = () => {
   NEW_UNDEFINED()
   A = RES
   PUSH_OS()
   PC = PC + 1
 }
 
-M[PLUS] = () => {
+M[OpCodes.PLUS] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -418,7 +418,7 @@ M[PLUS] = () => {
   PC = PC + 1
 }
 
-M[MINUS] = () => {
+M[OpCodes.MINUS] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -429,7 +429,7 @@ M[MINUS] = () => {
   PC = PC + 1
 }
 
-M[TIMES] = () => {
+M[OpCodes.TIMES] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -440,7 +440,7 @@ M[TIMES] = () => {
   PC = PC + 1
 }
 
-M[EQUAL] = () => {
+M[OpCodes.EQUAL] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -451,7 +451,7 @@ M[EQUAL] = () => {
   PC = PC + 1
 }
 
-M[LESS] = () => {
+M[OpCodes.LESS] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -462,7 +462,7 @@ M[LESS] = () => {
   PC = PC + 1
 }
 
-M[GEQ] = () => {
+M[OpCodes.GEQ] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -473,7 +473,7 @@ M[GEQ] = () => {
   PC = PC + 1
 }
 
-M[LEQ] = () => {
+M[OpCodes.LEQ] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -484,7 +484,7 @@ M[LEQ] = () => {
   PC = PC + 1
 }
 
-M[GREATER] = () => {
+M[OpCodes.GREATER] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   POP_OS()
@@ -495,7 +495,7 @@ M[GREATER] = () => {
   PC = PC + 1
 }
 
-M[NOT] = () => {
+M[OpCodes.NOT] = () => {
   POP_OS()
   A = !HEAP[RES + BOOL_VALUE_SLOT]
   NEW_BOOL()
@@ -504,7 +504,7 @@ M[NOT] = () => {
   PC = PC + 1
 }
 
-M[DIV] = () => {
+M[OpCodes.DIV] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   E = A
@@ -523,18 +523,18 @@ M[DIV] = () => {
   }
 }
 
-M[POP] = () => {
+M[OpCodes.POP] = () => {
   POP_OS()
   PC = PC + 1
 }
 
-M[ASSIGN] = () => {
+M[OpCodes.ASSIGN] = () => {
   POP_OS()
   HEAP[ENV + HEAP[ENV + FIRST_CHILD_SLOT] + P[PC + 1]] = RES
   PC = PC + 2
 }
 
-M[JOF] = () => {
+M[OpCodes.JOF] = () => {
   POP_OS()
   A = HEAP[RES + NUMBER_VALUE_SLOT]
   if (!A) {
@@ -545,11 +545,11 @@ M[JOF] = () => {
   }
 }
 
-M[GOTO] = () => {
+M[OpCodes.GOTO] = () => {
   PC = P[PC + 1]
 }
 
-M[LDF] = () => {
+M[OpCodes.LDF] = () => {
   A = P[PC + LDF_MAX_OS_SIZE_OFFSET]
   B = P[PC + LDF_ADDRESS_OFFSET]
   C = P[PC + LDF_ENV_EXTENSION_COUNT_OFFSET]
@@ -559,13 +559,13 @@ M[LDF] = () => {
   PC = PC + 4
 }
 
-M[LD] = () => {
+M[OpCodes.LD] = () => {
   A = HEAP[ENV + HEAP[ENV + FIRST_CHILD_SLOT] + P[PC + 1]]
   PUSH_OS()
   PC = PC + 2
 }
 
-M[CALL] = () => {
+M[OpCodes.CALL] = () => {
   G = P[PC + 1] // lets keep number of arguments in G
   // we peek down OS to get the closure
   F = HEAP[OS + HEAP[OS + LAST_CHILD_SLOT] - G]
@@ -597,7 +597,7 @@ M[CALL] = () => {
   ENV = E
 }
 
-M[RTN] = () => {
+M[OpCodes.RTN] = () => {
   POP_RTS()
   H = RES
   PC = HEAP[H + RTS_FRAME_PC_SLOT]
@@ -608,7 +608,7 @@ M[RTN] = () => {
   PUSH_OS()
 }
 
-M[DONE] = () => {
+M[OpCodes.DONE] = () => {
   RUNNING = false
 }
 
@@ -631,22 +631,22 @@ export function run() {
   }
 }
 
-export function run_with_p(p: number[]) {
-    P = p
-    PC = 0
-    HEAP = []
-    FREE = 0
-    ENV = -Infinity
-    OS = -Infinity
-    RES = -Infinity
-    A = 0
-    B = 0
-    C = 0
-    D = 0
-    E = 0
-    F = 0
-    G = 0
-    H = 0
+export function runWithP(p: number[]) {
+  P = p
+  PC = 0
+  HEAP = []
+  FREE = 0
+  ENV = -Infinity
+  OS = -Infinity
+  RES = -Infinity
+  A = 0
+  B = 0
+  C = 0
+  D = 0
+  E = 0
+  F = 0
+  G = 0
+  H = 0
 
-    run()
+  run()
 }
