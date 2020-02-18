@@ -298,11 +298,14 @@ function NEW_ENVIRONMENT() {
 
 // expects env in A, by-how-many in B
 function EXTEND() {
-  A = HEAP[A + SIZE_SLOT] - 4 + B
-  NEW_ENVIRONMENT()
-  for (B = HEAP[ENV + FIRST_CHILD_SLOT]; B <= HEAP[ENV + LAST_CHILD_SLOT]; B = B + 1) {
-    HEAP[RES + B] = HEAP[ENV + B]
-  }
+    D = A;
+    A = HEAP[A + SIZE_SLOT] - 4 + B;
+    NEW_ENVIRONMENT();
+    for (B = HEAP[D + FIRST_CHILD_SLOT];
+         B <= HEAP[D + LAST_CHILD_SLOT];
+         B = B + 1) {
+        HEAP[RES + B] = HEAP[D + B];
+    }
 }
 
 // debugging: show current heap
