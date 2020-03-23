@@ -1,0 +1,411 @@
+% Created 2020-03-23 Mon 14:12
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{koo}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={koo},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.2.6)},
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Source Virtual Machine Language}
+\label{sec:orgf075a3c}
+This page serves as a repository for preliminary specification of a
+virtual machine code (byte code) format for Virtual Machine
+implementations of Source.
+
+\subsection{VM structure}
+\label{sec:org6010758}
+\subsubsection{Functions}
+\label{sec:org1b043d5}
+All code in an SVM program exists within functions. A function (distinct
+from a function value) consists of
+
+\begin{itemize}
+\item the stack size for the function (number of entries)
+\item the environment size for the function (number of entries)
+\item the number of arguments expected by the function, which must be less
+than or equal to the environment size for the function
+\item the function's code
+\end{itemize}
+
+\subsubsection{Programs}
+\label{sec:org9630e8e}
+An SVM program consists of functions. One function is designated as the
+entry point of the program.
+
+\subsubsection{Execution}
+\label{sec:org3db4c57}
+Execution of a program begins by calling the entry point with zero
+arguments. The result of the program is then the value returned from the
+entry point function. (This avoids having special instructions to start
+and end a program.)
+
+Instructions are executed sequentially, unless an instruction that
+transfers execution to another location in the program is executed.
+
+\begin{enumerate}
+\item Calling convention
+\label{sec:orgd5ca986}
+Functions are called using the \texttt{call} or \texttt{call.t} instructions. When a
+function is called,
+
+\begin{enumerate}
+\item the arguments are popped off the caller's stack, as detailed in the
+entries for the \texttt{call} and \texttt{call.t} instructions
+\item a new frame is created, based on the information in the function's
+header
+\item the arguments passed by the caller are inserted into the new
+environment, with the first argument in slot 0 of the environment,
+the second in slot 1, and so on
+\item execution is transferred to the first instruction of the function
+\end{enumerate}
+
+When a function returns,
+
+\begin{enumerate}
+\item the function's return value is pushed onto the stack of the caller,
+as detailed in the entries for the \texttt{call} and \texttt{call.t} instructions
+\item execution returns to the instruction in the caller immediately after
+the \texttt{call} or \texttt{call.t} instruction
+\end{enumerate}
+
+\item Faults
+\label{sec:org8f767f1}
+Some instructions may produce faults. When a fault occurs, execution
+halts.
+
+Implementations are recommended to track the reason for a fault, and
+provide some mechanism for debugging a fault (such as providing a stack
+trace, etc).
+
+Faults are documented within each instruction's entry.
+\end{enumerate}
+
+\subsubsection{Frames}
+\label{sec:org6149cad}
+A frame consists of an operand stack (hereafter referred to as just a
+stack) and an environment.
+
+A frame is created each time a function is called. When the function
+returns, its stack is destroyed; its environment may persist if there
+are new function values created that refer to its environment as their
+parent environment.
+
+\begin{enumerate}
+\item Values in stacks and environments
+\label{sec:org806609b}
+All SVM instructions do one of the following:
+
+\begin{itemize}
+\item load values from an environment onto the executing function's
+environment
+\item store values into an environment from the stack
+\item operate on values on the stack only
+\end{itemize}
+
+All values on stacks and in environments are either booleans, numbers,
+or boxed values (which may be any of the 7 SVM types, including booleans
+or numbers). Implementations are not required to be able to
+differentiate booleans, numbers or boxed values on stacks and in
+environments, but are required to track the types of values stored
+within a boxed value; this is required to implement instructions such as
+\texttt{add.g} that depend on the actual types of their operands.
+
+\item Stack
+\label{sec:org1887c3f}
+A stack is used to store intermediate results and pass operands to
+instructions.
+
+When a function is called, an empty stack is created with size as
+specified in the function's header.
+
+Stacks are accessed in a strictly LIFO manner; all instructions only
+push or pop from the top of the executing function's stack.
+
+\item Environment
+\label{sec:org3d9330d}
+An environment is used to store local variables and function arguments.
+
+When a function is called, a environment is created with size as
+specified in the function's header. The arguments passed to the function
+are placed in the first slots in the environment, with the first
+argument in slot 0, the second in slot 1, and so on.
+
+Environments are accessed only by the \texttt{ldl}, \texttt{ldp}, \texttt{stl} and \texttt{stp}
+instruction families, which load and store values in environments.
+\end{enumerate}
+
+\subsubsection{Data types}
+\label{sec:org7f680a2}
+The SVM recognises these distinct types:
+
+\begin{itemize}
+\item undefined, a singleton
+\item null, also a singleton
+\item boolean, either \texttt{true} or \texttt{false}
+\item number
+\item string
+\item array
+\item function
+\end{itemize}
+
+\begin{enumerate}
+\item Numbers
+\label{sec:org7d29292}
+Implementations are recommended to implement number semantics following
+the IEEE 754 double-precision floating point specification where
+possible. As an allowance for platforms for which this would be too
+expensive, implementations may implement number semantics following the
+single-precision floating point specification instead.
+
+\item Strings
+\label{sec:org91f31a5}
+Strings are arbitrary sequences of bytes (including the zero byte). SVM
+defines no operations on strings other than concatenation, so character
+encoding does not affect SVM string semantics.
+
+\item Arrays
+\label{sec:orgd568c88}
+Arrays are maps from non-negative integer numbers (indexes) to any
+value. Loading an unassigned index results in \texttt{undefined}.
+
+Arrays have a \texttt{length} property, accessed by the primitive function
+\texttt{array\_length}, that returns one plus the highest index that has been
+assigned to, or 0 if no index has been assigned to.
+
+Note: assigning \texttt{undefined} to an array index is indistinguishable
+except for the effect of the assignment on the array's \texttt{length}.
+
+\item Function values
+\label{sec:orgd197755}
+A function value is a tuple consisting of a pointer to the function's
+location in the program, and the environment in which the function value
+was created.
+\end{enumerate}
+
+\subsection{\href{SVML-Instruction-Set}{Instruction set}}
+\label{sec:org5170515}
+(click on the link)
+
+\subsection{Program representations}
+\label{sec:org93986c5}
+There are two standard representations of a SVML program. VM
+implementations are free to accept the representation that works best
+for them.
+
+\subsubsection{JSON assembly format}
+\label{sec:org5024ad9}
+A program is an array consisting of two values:
+
+\begin{itemize}
+\item the index of the entry point function in the following array
+\item an array of functions
+\end{itemize}
+
+A function is an array consisting of four values:
+
+\begin{itemize}
+\item the stack size for the function, as a number
+\item the environment size for the function, as a number
+\item the number of arguments expected by the function, as a number
+\item the function's code, an array of instructions
+\end{itemize}
+
+An instruction is an array consisting of:
+
+\begin{itemize}
+\item the opcode in position 0
+\item any arguments which may include numbers, boolean values, or strings
+\end{itemize}
+
+For instructions \texttt{new.c} and \texttt{jmp} which take =<address>=es, an array
+consisting of the following is specified instead:
+
+\begin{itemize}
+\item the index of the function
+\item the index of the instruction in the function (for \texttt{jmp}; ignored and
+optional for \texttt{new.c})
+\end{itemize}
+
+For instructions \texttt{br.t} and \texttt{br} which take =<offset>=s, a number
+specifying the number of \emph{instructions} to skip is specified instead.
+
+As a TypeScript type definition:
+
+\begin{verbatim}
+type Offset = number; // instructions to skip
+type Address = [
+    number, // function index
+    number  // instruction index within function; optional
+];
+type Instruction = [
+    number,                     // opcode
+    number | boolean | string | // arguments
+        Offset | Address
+];
+type SVMFunction = [
+    number,         // stack size
+    number,         // environment size
+    number,         // number of arguments
+    Instruction[]   // code
+];
+type Program = [
+    number,         // index of entry point function
+    SVMFunction[]
+];
+\end{verbatim}
+
+\subsubsection{Binary format}
+\label{sec:orgcab67ee}
+\begin{itemize}
+\item There is no padding between any values unless explicitly specified.
+\item All instruction opcodes are one byte long.
+\item All values are in little-endian.
+\item We use the integer and float type names from Rust to denote operand
+types in instruction entries.
+
+\begin{itemize}
+\item E.g. \texttt{u8} refers to an 8-bit unsigned integer; \texttt{i32} refers to a
+32-bit signed integer; \texttt{f32} refers to a 32-bit (single-precision)
+floating point.
+\end{itemize}
+
+\item An \texttt{address} is a 32-bit unsigned integer \texttt{u32} that refers to an
+offset from the start of the program.
+\item An \texttt{offset} is a 32-bit signed integer \texttt{u8} that refers to an offset
+from the start of the \emph{next} instruction.
+\item A structure \emph{aligned to N bytes} means:
+
+\begin{itemize}
+\item if \texttt{address \% N =} 0=, then the structure may begin there
+\item otherwise, skip \texttt{N - address \% N} bytes, and then begin the
+structure
+\end{itemize}
+\end{itemize}
+
+A program is a \texttt{Program}.
+
+\begin{enumerate}
+\item \texttt{Program} structure
+\label{sec:orgd4a8252}
+\begin{center}
+\begin{tabular}{ll}
+Field & Type\\
+\hline
+Header & \texttt{Header}\\
+Constant & \texttt{Constant[]}\\
+Alignment & to 4-bytes\\
+Functions & \texttt{Function[]}\\
+\end{tabular}
+\end{center}
+
+Each \texttt{Constant} and \texttt{Function} is aligned to 4 bytes.
+
+\item \texttt{Header} structure
+\label{sec:org1228260}
+\begin{center}
+\begin{tabular}{ll}
+Field & Type\\
+\hline
+Magic & \texttt{u32}\\
+Major version & \texttt{u16}\\
+Minor version & \texttt{u16}\\
+Entry point & \texttt{address}\\
+Constant pool count & \texttt{u32}\\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item Magic is the value \texttt{0x5005ACAD}
+\item The entry point must point to a \texttt{Function}
+\end{itemize}
+
+\texttt{Header} is 16 bytes.
+
+\item \texttt{Constant} structure
+\label{sec:org608f2fc}
+Each \texttt{Constant} should be aligned to 4 bytes.
+
+\begin{center}
+\begin{tabular}{ll}
+Field & Type\\
+\hline
+Type & \texttt{u16}\\
+Length & \texttt{u32}\\
+Data & Depends on type\\
+\end{tabular}
+\end{center}
+
+\texttt{Constant} is \texttt{6 + Length} bytes.
+
+\begin{enumerate}
+\item String (type \texttt{1})
+\label{sec:orge15c666}
+\begin{center}
+\begin{tabular}{ll}
+Field & Type\\
+\hline
+Data & \texttt{u8[]}\\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item The length of Data is equal to Length in the constant header.
+\end{itemize}
+\end{enumerate}
+
+\item \texttt{Function} structure
+\label{sec:orgeccc7c7}
+Each \texttt{Function} should be aligned to 4 bytes.
+
+\begin{center}
+\begin{tabular}{ll}
+Field & Type\\
+\hline
+Stack size & \texttt{u8}\\
+Environment size & \texttt{u8}\\
+Number of arguments & \texttt{u8}\\
+Padding (alignment) & \texttt{u8}\\
+Code & \texttt{Instruction[]}\\
+\end{tabular}
+\end{center}
+
+\item \texttt{Instruction} structure
+\label{sec:org4132fac}
+An instruction consists of the \texttt{u8} opcode plus any arguments. There is
+no padding or alignment between arguments. Instructions are concatenated
+with no padding or alignment between instructions.
+
+For example, the following instructions
+
+\begin{verbatim}
+ldc.i 123
+pop.f
+\end{verbatim}
+
+should result in the following (hex) bytes:
+
+\texttt{01 7B 00 00 00 10}
+\end{enumerate}
+\end{document}
