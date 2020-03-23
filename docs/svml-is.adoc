@@ -1,0 +1,1302 @@
+:toc: macro
+:toclevels: 4
+
+== Source VM instruction set
+
+toc::[]
+
+=== General faults
+
+Faults specific to particular instructions are documented in the entries
+below.
+
+Aside from those, the following faults can occur; these are presented
+here as they apply to multiple instructions.
+
+* Pushing onto a full stack
+* Popping from an empty stack
+* Loading from or storing into an invalid index in an environment
+* Running out of memory
+
+=== Mnemonic conventions
+
+For instructions that operate on values, the type of the operand(s) is
+represented in the instruction mnemonic by a letter:
+
+* `+u+` undefined
+* `+n+` null
+* `+b+` boolean
+* `+i+` integer
+* `+f+` number (float)
+* `+s+` string
+* `+a+` array
+* `+c+` function
+* `+g+` boxed value
+
+=== Instruction entry format
+
+==== `+mnemonic+`: instruction name
+
+Format: `+opcode <argument1: type> <argument2: type>+` (N bytes)
+
+The binary format byte count is omitted for instructions with no
+arguments. They are 1 byte long.
+
+Stack before: ..., `+value1: type+`, `+value2: type+` ■
+
+Stack after: ..., `+value3: type+` ■
+
+■ represents the top of the stack.
+
+The rest of the entry details what the opcode does, and any possible
+faults.
+
+=== Instructions
+
+==== `+nop+`: no-op
+
+Format: `+0x00+`
+
+Does not modify the stack.
+
+Does nothing.
+
+==== `+ldc.i+`: load constant integer
+
+Format: `+0x01 <value: i32>+` (5 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<value>: number+` ■
+
+Pushes an integer with value equal to `+<value>+` onto the stack.
+
+==== `+lgc.i+`: load boxed constant integer
+
+Format: `+0x02 <value: i32>+` (5 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<value>: boxed (number)+` ■
+
+Pushes a boxed integer with value equal to `+<value>+` onto the stack.
+
+==== `+ldc.f32+`: load constant number (single-precision)
+
+Format: `+0x03 <number: f32>+` (5 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<number>: number+` ■
+
+Pushes a number with value equal to `+<number>+` onto the stack.
+
+==== `+lgc.f32+`: load boxed constant number (single-precision)
+
+Format: `+0x04 <number: f32>+` (5 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<number>: boxed (number)+` ■
+
+Pushes a boxed number with value equal to `+<number>+` onto the stack.
+
+==== `+ldc.f64+`: load constant number (double-precision)
+
+Format: `+0x05 <number: f64>+` (9 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<number>: number+` ■
+
+Pushes a number with value equal to `+<number>+` onto the stack.
+
+==== `+lgc.f64+`: load boxed constant number (double-precision)
+
+Format: `+0x06 <number: f64>+` (9 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<number>: boxed (number)+` ■
+
+Pushes a boxed number with value equal to `+<number>+` onto the stack.
+
+==== `+ldc.b.0+`: load constant false
+
+Format: `+0x07+`
+
+Stack before: ... ■
+
+Stack after: ..., `+false: boolean+` ■
+
+Pushes the boolean `+false+` onto the stack.
+
+==== `+ldc.b.1+`: load constant true
+
+Format: `+0x08+`
+
+Stack before: ... ■
+
+Stack after: ..., `+true: boolean+` ■
+
+Pushes the boolean `+true+` onto the stack.
+
+==== `+lgc.b.0+`: load boxed constant false
+
+Format: `+0x09+`
+
+Stack before: ... ■
+
+Stack after: ..., `+false: boxed (boolean)+` ■
+
+Pushes a boxed boolean `+false+` onto the stack.
+
+==== `+lgc.b.1+`: load boxed constant true
+
+Format: `+0x0A+`
+
+Stack before: ... ■
+
+Stack after: ..., `+true: boxed (boolean)+` ■
+
+Pushes a boxed boolean `+true+` onto the stack.
+
+==== `+lgc.u+`: load boxed constant undefined
+
+Format: `+0x0B+`
+
+Stack before: ... ■
+
+Stack after: ..., `+undefined: boxed (undefined)+` ■
+
+Pushes a boxed `+undefined+` onto the stack.
+
+==== `+lgc.n+`: load boxed constant null
+
+Format: `+0x0C+`
+
+Stack before: ... ■
+
+Stack after: ..., `+null: boxed (null)+` ■
+
+Pushes a boxed `+null+` onto the stack.
+
+==== `+lgc.s+`: load constant string
+
+Format: `+0x0D <address>+` (5 bytes)
+
+In the JSON format, the string literal is specified directly instead.
+
+Stack before: ... ■
+
+Stack after: ..., `+<string>: boxed (string)+` ■
+
+Pushes the string at the given address onto the stack.
+
+The string at the given address should be null-terminated.
+
+==== `+pop.g+`: pop boxed value from stack
+
+Format: `+0x0E+`
+
+Stack before: ..., `+<value>: boxed+` ■
+
+Stack after: ... ■
+
+Pops a boxed value off the stack.
+
+Behaviour is undefined if `+<value>+` is not a boxed value.
+
+==== `+pop.b+`: pop boolean from stack
+
+Format: `+0x0F+`
+
+Stack before: ..., `+<value>: boolean+` ■
+
+Stack after: ... ■
+
+Pops a boolean off the stack.
+
+Behaviour is undefined if `+<value>+` is not a boolean.
+
+==== `+pop.f+`: pop number from stack
+
+Format: `+0x10+`
+
+Stack before: ..., `+<value>: number+` ■
+
+Stack after: ... ■
+
+Pops a number off the stack.
+
+Behaviour is undefined if `+<value>+` is not a number.
+
+==== `+add.g+`: add boxed values
+
+Format: `+0x11+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boxed+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are strings, pushes their concatenation
+`+<c> = <a> + <b>+` onto the stack.
+
+If `+<a>+` and `+<b>+` are numbers, pushes their sum `+<c> = <a> + <b>+`
+onto the stack.
+
+Otherwise, a fault occurs.
+
+==== `+add.f+`: add numbers
+
+Format: `+0x12+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: number+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes their sum
+`+<c> = <a> + <b>+` onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+sub.g+`: subtract boxed values
+
+Format: `+0x13+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boxed+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are numbers, pushes their difference
+`+<c> = <a> - <b>+` onto the stack.
+
+Otherwise, a fault occurs.
+
+==== `+sub.f+`: subtract numbers
+
+Format: `+0x14+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: number+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes their difference
+`+<c> = <a> - <b>+` onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+mul.g+`: multiply boxed values
+
+Format: `+0x15+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boxed+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are numbers, pushes their product
+`+<c> = <a> * <b>+` onto the stack.
+
+Otherwise, a fault occurs.
+
+==== `+mul.f+`: multiply numbers
+
+Format: `+0x16+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: number+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes their product
+`+<c> = <a> * <b>+` onto the stack.
+
+If `+<b>+` is the number 0, a fault occurs.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+div.g+`: divide boxed values
+
+Format: `+0x17+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boxed+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are numbers, pushes their quotient
+`+<c> = <a> / <b>+` onto the stack.
+
+Otherwise, a fault occurs.
+
+==== `+div.f+`: divide numbers
+
+Format: `+0x18+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: number+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes their quotient
+`+<c> = <a> / <b>+` onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+mod.g+`: modulo boxed values
+
+Format: `+0x19+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boxed+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are numbers, pushes `+<c> = <a> % <b>+` onto the
+stack.
+
+Otherwise, a fault occurs.
+
+==== `+mod.f+`: modulo numbers
+
+Format: `+0x1A+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: number+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> % <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+not.g+`: negate boxed value
+
+Format: `+0x1B+`
+
+Stack before: ..., `+<a>: boxed+` ■
+
+Stack after: ..., `+<b>: boxed+` ■
+
+Pops `+<a>+` off the stack.
+
+If `+<a>+` is a boolean, pushes its negation `+<b>+` onto the stack.
+
+Otherwise, a fault occurs.
+
+==== `+not.b+`: negate boolean
+
+Format: `+0x1C+`
+
+Stack before: ..., `+<a>: boolean+` ■
+
+Stack after: ..., `+<b>: boolean+` ■
+
+Pops `+<a>+` off the stack, then pushes its negation `+<b>+` onto the
+stack.
+
+If `+<a>+` is not a boolean, behaviour is undefined.
+
+==== `+lt.g+`: less than, boxed operands
+
+Format: `+0x1D+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are both strings or both numbers, pushes
+`+<c> = <a> < <b>+`, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+==== `+lt.f+`: less than, number operands
+
+Format: `+0x1E+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> < <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+gt.g+`: greater than, boxed operands
+
+Format: `+0x1F+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are both strings or both numbers, pushes
+`+<c> = <a> > <b>+`, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+==== `+gt.f+`: greater than, number operands
+
+Format: `+0x20+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> > <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+le.g+`: less than or equal to, boxed operands
+
+Format: `+0x21+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are both strings or both numbers, pushes
+`+<c> = <a> <= <b>+`, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+==== `+le.f+`: less than or equal to, number operands
+
+Format: `+0x22+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> <= <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+ge.g+`: greater than or equal to, boxed operands
+
+Format: `+0x23+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are both strings or both numbers, pushes
+`+<c> = <a> >= <b>+`, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+==== `+ge.f+`: greater than or equal to, number operands
+
+Format: `+0x24+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> >= <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+eq.g+`: equal, boxed operands
+
+Format: `+0x25+`
+
+Stack before: ..., `+<a>: boxed+`, `+<b>: boxed+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack.
+
+If `+<a>+` and `+<b>+` are not boxed values, behaviour is undefined.
+
+If `+<a>+` and `+<b>+` are of different types, pushes `+false+` onto the
+stack.
+
+If `+<a>+` and `+<b>+` are both `+undefined+` or both `+null+`, pushes
+`+true+` onto the stack.
+
+If `+<a>+` and `+<b>+` are both booleans, both numbers or both strings,
+pushes `+true+` onto the stack if they have the same value, otherwise
+pushes `+false+` onto the stack.
+
+If `+<a>+` and `+<b>+` are both functions or both arrays, pushes
+`+true+` onto the stack if they are referentially equal i.e. they refer
+to the exact same array or function object, otherwise pushes `+false+`
+onto the stack.
+
+The above cases are exhaustive.
+
+==== `+eq.f+`: equal, number operands
+
+Format: `+0x26+`
+
+Stack before: ..., `+<a>: number+`, `+<b>: number+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> == <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not numbers, behaviour is undefined.
+
+==== `+eq.b+`: equal, boolean operands
+
+Format: `+0x27+`
+
+Stack before: ..., `+<a>: boolean+`, `+<b>: boolean+` ■
+
+Stack after: ..., `+<c>: boolean+` ■
+
+Pops `+<a>+` and `+<b>+` off the stack, then pushes `+<c> = <a> == <b>+`
+onto the stack.
+
+If `+<a>+` and `+<b>+` are not booleans, behaviour is undefined.
+
+==== `+new.c+`: create function
+
+Format: `+0x28 <address>+` (5 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<c>: boxed (function)+` ■
+
+Pushes a new function object `+<c>+` onto the stack referring to the
+function at the given address.
+
+==== `+new.a+`: create array
+
+Format: `+0x29+`
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: boxed (array)+` ■
+
+Pushes a new empty array onto the stack.
+
+==== `+ldl.g+`: load boxed value from current environment
+
+Format: `+0x2A <index: u8>+` (2 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: boxed+` ■
+
+Pushes the value `+<a>+` at index `+index+` in the current environment
+onto the stack.
+
+If the value at index `+index+` in the current environment is not a
+boxed value, behaviour is undefined.
+
+==== `+ldl.f+`: load number from current environment
+
+Format: `+0x2B <index: u8>+` (2 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: number+` ■
+
+Pushes the value `+<a>+` at index `+index+` in the current environment
+onto the stack.
+
+If the value at index `+index+` in the current environment is not a
+number, behaviour is undefined.
+
+==== `+ldl.b+`: load boolean from current environment
+
+Format: `+0x2C <index: u8>+` (2 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: boolean+` ■
+
+Pushes the value `+<a>+` at index `+index+` in the current environment
+onto the stack.
+
+If the value at index `+index+` in the current environment is not a
+boolean, behaviour is undefined.
+
+==== `+stl.g+`: store boxed value into current environment
+
+Format: `+0x2D <index: u8>+` (2 bytes)
+
+Stack before: ..., `+<a>: boxed+` ■
+
+Stack after: ... ■
+
+Pops `+<a>+` off the stack and stores it in index `+index+` in the
+current environment.
+
+If `+<a>+` is not a boxed value, behaviour is undefined.
+
+==== `+stl.b+`: store boolean into current environment
+
+Format: `+0x2E <index: u8>+` (2 bytes)
+
+Stack before: ..., `+<a>: boolean+` ■
+
+Stack after: ... ■
+
+Pops `+<a>+` off the stack and stores it in index `+index+` in the
+current environment.
+
+If `+<a>+` is not a boolean, behaviour is undefined.
+
+==== `+stl.f+`: store number into current environment
+
+Format: `+0x2F <index: u8>+` (2 bytes)
+
+Stack before: ..., `+<a>: number+` ■
+
+Stack after: ... ■
+
+Pops `+<a>+` off the stack and stores it in index `+index+` in the
+current environment.
+
+If `+<a>+` is not a number, behaviour is undefined.
+
+==== `+ldp.g+`: load boxed value from (parent) environment
+
+Format: `+0x30 <index: u8> <envindex: u8>+` (3 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: boxed+` ■
+
+Pushes the value at index `+index+` in the ``envindex``th parent of the
+current environment onto the stack. If `+envindex+` is `+0+`, this is
+equivalent to `+ldl.g+`.
+
+If the value is not a boxed value, behaviour is undefined.
+
+==== `+ldp.f+`: load number from (parent) environment
+
+Format: `+0x31 <index: u8> <envindex: u8>+` (3 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: number+` ■
+
+Pushes the value at index `+index+` in the ``envindex``th parent of the
+current environment onto the stack. If `+envindex+` is `+0+`, this is
+equivalent to `+ldl.f+`.
+
+If the value is not a number, behaviour is undefined.
+
+==== `+ldp.b+`: load boolean from (parent) environment
+
+Format: `+0x32 <index: u8> <envindex: u8>+` (3 bytes)
+
+Stack before: ... ■
+
+Stack after: ..., `+<a>: boolean+` ■
+
+Pushes the value at index `+index+` in the ``envindex``th parent of the
+current environment onto the stack. If `+envindex+` is `+0+`, this is
+equivalent to `+ldl.f+`.
+
+If the value is not a boolean, behaviour is undefined.
+
+==== `+stp.g+`: store boxed value into (parent) environment
+
+Format: `+0x33 <index: u8> <envindex: u8>+` (3 bytes)
+
+Stack before: ..., `+<a>: boxed+` ■
+
+Stack after: ... ■
+
+Pops `+<a>+` off the stack, and stores `+<a>+` into index `+index+` in
+the ``envindex``th parent of the current environment.
+
+If `+<a>+` is not a boxed value, behaviour is undefined.
+
+==== `+stp.b+`: store boolean into (parent) environment
+
+Format: `+0x34 <index: u8> <envindex: u8>+` (3 bytes)
+
+Stack before: ..., `+<a>: boolean+` ■
+
+Stack after: ... ■
+
+Pops `+<a>+` off the stack, and stores `+<a>+` into index `+index+` in
+the ``envindex``th parent of the current environment.
+
+If `+<a>+` is not a boolean, behaviour is undefined.
+
+==== `+stp.f+`: store number into (parent) environment
+
+Format: `+0x35 <index: u8> <envindex: u8>+` (3 bytes)
+
+Stack before: ..., `+<a>: number+` ■
+
+Stack after: ... ■
+
+Pops `+<a>+` off the stack, and stores `+<a>+` into index `+index+` in
+the ``envindex``th parent of the current environment.
+
+If `+<a>+` is not a number, behaviour is undefined.
+
+==== `+lda.g+`: load boxed value from array
+
+Format: `+0x36+`
+
+Stack before: ..., `+<array>: boxed (array)+`, `+<index>: number+` ■
+
+Stack after: ..., `+<value>: boxed+` ■
+
+Pops `+index+` and `+array+` off the stack.
+
+If `+index+` is a non-negative integer, pushes the value at index
+`+index+` in `+array+` onto the stack.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if the value at index `+index+` in array is not a
+boxed value.
+
+==== `+lda.b+`: load boolean from array
+
+Format: `+0x37+`
+
+Stack before: ..., `+<array>: boxed (array)+`, `+<index>: number+` ■
+
+Stack after: ..., `+<value>: boolean+` ■
+
+Pops `+index+` and `+array+` off the stack.
+
+If `+index+` is a non-negative integer, pushes the value at index
+`+index+` in `+array+` onto the stack.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if the value at index `+index+` in array is not a
+boolean.
+
+==== `+lda.f+`: load number from array
+
+Format: `+0x38+`
+
+Stack before: ..., `+<array>: boxed (array)+`, `+<index>: number+` ■
+
+Stack after: ..., `+<value>: number+` ■
+
+Pops `+index+` and `+array+` off the stack.
+
+If `+index+` is a non-negative integer, pushes the value at index
+`+index+` in `+array+` onto the stack.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if the value at index `+index+` in array is not a
+number.
+
+==== `+sta.g+`: store boxed value into array
+
+Format: `+0x39+`
+
+Stack before: ..., `+<array>: boxed (array)+`, `+<index>: number+`,
+`+<value>: boxed+` ■
+
+Stack after: ... ■
+
+Pops `+value+`, `+index+` and `+array+` off the stack.
+
+If `+index+` is a non-negative integer, stores `+value+` into index
+`+index+` in `+array+`.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if `+value+` is not a boxed value.
+
+==== `+sta.b+`: store boolean into array
+
+Format: `+0x3A+`
+
+Stack before: ..., `+<array>: boxed (array)+`, `+<index>: number+`,
+`+<value>: boolean+` ■
+
+Stack after: ... ■
+
+Pops `+value+`, `+index+` and `+array+` off the stack.
+
+If `+index+` is a non-negative integer, stores `+value+` into index
+`+index+` in `+array+`.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if `+value+` is not a boolean.
+
+==== `+sta.f+`: store number into array
+
+Format: `+0x3B+`
+
+Stack before: ..., `+<array>: boxed (array)+`, `+<index>: number+`,
+`+<value>: number+` ■
+
+Stack after: ... ■
+
+Pops `+value+`, `+index+` and `+array+` off the stack.
+
+If `+index+` is a non-negative integer, stores `+value+` into index
+`+index+` in `+array+`.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if `+value+` is not a number.
+
+==== `+br.t+`: branch if true
+
+Format: `+0x3C <offset>+` (5 bytes)
+
+Stack before: ..., `+<condition>: boolean+` ■
+
+Stack after: ... ■
+
+Pops `+condition+` off the stack.
+
+If `+condition+` is a boolean and is true, skips `+offset+` bytes
+starting from after the current instruction. That is, `+br.t 0+` is a
+no-op.
+
+Note that `+offset+` can be negative.
+
+If `+condition+` is a boolean and is false, does nothing.
+
+Otherwise, a fault occurs.
+
+==== `+br.f+`: branch if false
+
+Format: `+0x3D <offset>+` (5 bytes)
+
+Stack before: ..., `+<condition>: boolean+` ■
+
+Stack after: ... ■
+
+Pops `+condition+` off the stack.
+
+If `+condition+` is a boolean and is false, skips `+offset+` bytes
+starting from after the current instruction. That is, `+br.f 0+` is a
+no-op.
+
+Note that `+offset+` can be negative.
+
+If `+condition+` is a boolean and is true, does nothing.
+
+Otherwise, a fault occurs.
+
+==== `+br+`: branch
+
+Format: `+0x3E <offset>+` (5 bytes)
+
+Does not modify the stack.
+
+Skips `+offset+` bytes starting from after the current instruction. That
+is, `+br 0+` is a no-op.
+
+Note that `+offset+` can be negative.
+
+==== `+jmp+`: jump
+
+Format: `+0x3F <address>+` (5 bytes)
+
+Jumps to `+address+`. Note: the current environment and stack are
+unchanged.
+
+==== `+call+`: call function
+
+Format: `+0x40 <numargs: u8>+` (2 bytes)
+
+Stack before: ..., `+<f>: boxed (function)+`, `+<a1>+`, `+<a2>+`, ...,
+`+<aN>+` ■
+
+Stack after: ..., `+<r>+` ■
+
+Pops the arguments to be passed to the function off the stack in reverse
+order, followed by the function to be called. That is, pop the last
+argument, followed by the second last, and so on, until the first
+argument, then the function.
+
+Calls the function, and then pushes the return value of the function
+onto the stack.
+
+The type of arguments to be popped, and the type of the return value, is
+determined by the function header as referred to by the function object.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the types specified in the function header.
+
+A fault occurs if the number of arguments specified in `+<numargs>+` is
+different from the number of arguments expected by the function as
+specified in the function header.
+
+==== `+call.t+`: tail call function
+
+Format: `+0x41 <numargs: u8>+` (2 bytes)
+
+Stack before: ..., `+<f>: boxed (function)+`, `+<a1>+`, `+<a2>+`, ...,
+`+<aN>+` ■
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order, followed by the function to be called. That is, pop the last
+argument, followed by the second last, and so on, until the first
+argument, then the function.
+
+Calls the function. The return value of the callee function will become
+the return value of the current function, and execution returns to the
+caller of the current function.
+
+The type of arguments to be popped, and the type of the return value, is
+determined by the function header as referred to by the function object.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the types specified in the function header.
+
+A fault occurs if the number of arguments specified in `+<numargs>+` is
+different from the number of arguments expected by the function as
+specified in the function header.
+
+==== `+call.p+`: call primitive function
+
+Format: `+0x42 <id: u8> <numargs: u8>+` (3 bytes)
+
+Stack before: ..., `+<a1>+`, `+<a2>+`, ..., `+<aN>+` ■
+
+Stack after: ..., `+<r>+` ■
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the primitive function with the given `+id+`, and then pushes the
+return value of the function onto the stack.
+
+The types of the arguments are as specified in the list of primitive
+functions.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+==== `+call.t.p+`: tail call primitive function
+
+Format: `+0x43 <id: u8> <numargs: u8>+` (3 bytes)
+
+Stack before: ..., `+<a1>+`, `+<a2>+`, ..., `+<aN>+` ■
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the primitive function with the given `+id+`. The return value of
+the primitive function will become the return value of the current
+function, and execution returns to the caller of the current function.
+
+The types of the arguments are as specified in the list of primitive
+functions.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+==== `+call.v+`: call VM-internal function/native function
+
+Format: `+0x44 <id: u8> <numargs: u8>+` (3 bytes)
+
+Stack before: ..., `+<a1>+`, `+<a2>+`, ..., `+<aN>+` ■
+
+Stack after: ..., `+<r>+` ■
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the VM-internal function with the given `+id+`, and then pushes
+the return value of the function onto the stack.
+
+VM-internal functions are specified by the VM implementation.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+==== `+call.t.v+`: tail call VM-internal function/native function
+
+Format: `+0x45 <id: u8> <numargs: u8>+` (3 bytes)
+
+Stack before: ..., `+<a1>+`, `+<a2>+`, ..., `+<aN>+` ■
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the VM-internal function with the given `+id+`. The return value
+of the VM-internal function will become the return value of the current
+function, and execution returns to the caller of the current function.
+
+VM-internal functions are specified by the VM implementation.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+==== `+ret.g+`: return boxed value
+
+Format: `+0x46+`
+
+Stack before: ..., `+<retval>: boxed+` ■
+
+Stack after: (the stack is destroyed)
+
+Pops `+retval+` off the stack. Makes `+retval+` the return value of the
+current function, and returns execution to the caller of the current
+function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not a boxed value.
+
+Behaviour is undefined if `+retval+` is not a boxed value.
+
+==== `+ret.f+`: return number
+
+Format: `+0x47+`
+
+Stack before: ..., `+<retval>: number+` ■
+
+Stack after: (the stack is destroyed)
+
+Pops `+retval+` off the stack. Makes `+retval+` the return value of the
+current function, and returns execution to the caller of the current
+function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not a number.
+
+Behaviour is undefined if `+retval+` is not a number.
+
+==== `+ret.b+`: return boolean
+
+Format: `+0x48+`
+
+Stack before: ..., `+<retval>: boolean+` ■
+
+Stack after: (the stack is destroyed)
+
+Pops `+retval+` off the stack. Makes `+retval+` the return value of the
+current function, and returns execution to the caller of the current
+function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not a boolean.
+
+Behaviour is undefined if `+retval+` is not a boolean.
+
+==== `+ret.u+`: return undefined
+
+Format: `+0x49+`
+
+Stack before: ... ■
+
+Stack after: (the stack is destroyed)
+
+Makes `+undefined+` the return value of the current function, and
+returns execution to the caller of the current function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not undefined.
+
+==== `+ret.n+`: return null
+
+Format: `+0x4A+`
+
+Stack before: ... ■
+
+Stack after: (the stack is destroyed)
+
+Makes `+null+` the return value of the current function, and returns
+execution to the caller of the current function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not undefined.
+
+==== `+dup+`: duplicate top of stack
+
+Format: `+0x4B+`
+
+Stack before: ... `+<value>+` ■
+
+Stack after: ... `+<value>+`, `+<value>+` ■
+
+Pushes a copy of the topmost value on the stack onto the stack.
+
+A fault occurs if the stack is full, or the stack is empty.
+
+==== `+newenv+`: create new environment
+
+Format: `+0x4C <size: u8>+` (2 bytes)
+
+Does not modify the stack.
+
+Creates a new environment whose parent is the current environment and with
+`size` entries. Sets the current environment to the new environment.
+
+==== `+popenv+`: pop environment
+
+Format: `+0x4D+`
+
+Does not modify the stack.
+
+Sets the current environment to be the parent of the current environment.
+
+=== Primitive functions
+
+The functions below correspond to the functions defined in the
+https://sicp.comp.nus.edu.sg/source/source_4/[Source language
+documentation].
+
+The behaviours of `+display+` and `+error+` are implementation-defined.
+
+* 0x00 accumulate
+* 0x01 append
+* 0x02 array_length
+* 0x03 build_list
+* 0x04 build_stream
+* 0x05 display
+* 0x06 draw_data
+* 0x07 enum_list
+* 0x08 enum_stream
+* 0x09 equal
+* 0x0a error
+* 0x0b eval_stream
+* 0x0c filter
+* 0x0d for_each
+* 0x0e head
+* 0x0f integers_from
+* 0x10 is_array
+* 0x11 is_boolean
+* 0x12 is_function
+* 0x13 is_list
+* 0x14 is_null
+* 0x15 is_number
+* 0x16 is_pair
+* 0x17 is_stream
+* 0x18 is_string
+* 0x19 is_undefined
+* 0x1a length
+* 0x1b list
+* 0x1c list_ref
+* 0x1d list_to_stream
+* 0x1e list_to_string
+* 0x1f map
+* 0x20 math_abs
+* 0x21 math_acos
+* 0x22 math_acosh
+* 0x23 math_asin
+* 0x24 math_asinh
+* 0x25 math_atan
+* 0x26 math_atan2
+* 0x27 math_atanh
+* 0x28 math_cbrt
+* 0x29 math_ceil
+* 0x2a math_clz32
+* 0x2b math_cos
+* 0x2c math_cosh
+* 0x2d math_exp
+* 0x2e math_expm1
+* 0x2f math_floor
+* 0x30 math_fround
+* 0x31 math_hypot
+* 0x32 math_imul
+* 0x33 math_log
+* 0x34 math_log1p
+* 0x35 math_log2
+* 0x36 math_log10
+* 0x37 math_max
+* 0x38 math_min
+* 0x39 math_pow
+* 0x3a math_random
+* 0x3b math_round
+* 0x3c math_sign
+* 0x3d math_sin
+* 0x3e math_sinh
+* 0x3f math_sqrt
+* 0x40 math_tan
+* 0x41 math_tanh
+* 0x42 math_trunc
+* 0x43 member
+* 0x44 pair
+* 0x45 parse_int
+* 0x46 remove
+* 0x47 remove_all
+* 0x48 reverse
+* 0x49 runtime
+* 0x4a set_head
+* 0x4b set_tail
+* 0x4c stream
+* 0x4d stream_append
+* 0x4e stream_filter
+* 0x4f stream_for_each
+* 0x50 stream_length
+* 0x51 stream_map
+* 0x52 stream_member
+* 0x53 stream_ref
+* 0x54 stream_remove
+* 0x55 stream_remove_all
+* 0x56 stream_reverse
+* 0x57 stream_tail
+* 0x58 stream_to_list
+* 0x59 tail
+* 0x60 stringify
+
+=== Machine-parseable instruction set
+
+A JSON dump of the instruction set follows.
+
+[source,jsx]
+----
+[[0, "nop", "no-op"], [1, "ldc.i", "load constant integer"], [2, "lgc.i", "load boxed constant integer"], [3, "ldc.f32", "load constant number (single-precision)"], [4, "lgc.f32", "load boxed constant number (single-precision)"], [5, "ldc.f64", "load constant number (double-precision)"], [6, "lgc.f64", "load boxed constant number (double-precision)"], [7, "ldc.b.0", "load constant false"], [8, "ldc.b.1", "load constant true"], [9, "lgc.b.0", "load boxed constant false"], [10, "lgc.b.1", "load boxed constant true"], [11, "lgc.u", "load boxed constant undefined"], [12, "lgc.n", "load boxed constant null"], [13, "lgc.s", "load constant string"], [14, "pop.g", "pop boxed value from stack"], [15, "pop.b", "pop boolean from stack"], [16, "pop.f", "pop number from stack"], [17, "add.g", "add boxed values"], [18, "add.f", "add numbers"], [19, "sub.g", "subtract boxed values"], [20, "sub.f", "subtract numbers"], [21, "mul.g", "multiply boxed values"], [22, "mul.f", "multiply numbers"], [23, "div.g", "divide boxed values"], [24, "div.f", "divide numbers"], [25, "mod.g", "modulo boxed values"], [26, "mod.f", "modulo numbers"], [27, "not.g", "negate boxed value"], [28, "not.b", "negate boolean"], [29, "lt.g", "less than, boxed operands"], [30, "lt.f", "less than, number operands"], [31, "gt.g", "greater than, boxed operands"], [32, "gt.f", "greater than, number operands"], [33, "le.g", "less than or equal to, boxed operands"], [34, "le.f", "less than or equal to, number operands"], [35, "ge.g", "greater than or equal to, boxed operands"], [36, "ge.f", "greater than or equal to, number operands"], [37, "eq.g", "equal, boxed operands"], [38, "eq.f", "equal, number operands"], [39, "eq.b", "equal, boolean operands"], [40, "new.c", "create function"], [41, "new.a", "create array"], [42, "ldl.g", "load boxed value from current environment"], [43, "ldl.f", "load number from current environment"], [44, "ldl.b", "load boolean from current environment"], [45, "stl.g", "store boxed value into current environment"], [46, "stl.b", "store boolean into current environment"], [47, "stl.f", "store number into current environment"], [48, "ldp.g", "load boxed value from (parent) environment"], [49, "ldp.f", "load number from (parent) environment"], [50, "ldp.b", "load boolean from (parent) environment"], [51, "stp.g", "store boxed value into (parent) environment"], [52, "stp.b", "store boolean into (parent) environment"], [53, "stp.f", "store number into (parent) environment"], [54, "lda.g", "load boxed value from array"], [55, "lda.b", "load boolean from array"], [56, "lda.f", "load number from array"], [57, "sta.g", "store boxed value into array"], [58, "sta.b", "store boolean into array"], [59, "sta.f", "store number into array"], [60, "br.t", "branch if true"], [61, "br.f", "branch if false"], [62, "br", "branch"], [63, "jmp", "jump"], [64, "call", "call function"], [65, "call.t", "tail call function"], [66, "call.p", "call primitive function"], [67, "call.t.p", "tail call primitive function"], [68, "call.v", "call VM-internal function/native function"], [69, "call.t.v", "tail call VM-internal function/native function"], [70, "ret.g", "return boxed value"], [71, "ret.f", "return number"], [72, "ret.b", "return boolean"], [73, "ret.u", "return undefined"], [74, "ret.n", "return null"], [75, "dup", "duplicate top of stack"]]
+----

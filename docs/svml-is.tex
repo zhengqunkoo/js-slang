@@ -1,0 +1,1588 @@
+% Created 2020-03-23 Mon 15:16
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{koo}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={koo},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.2.6)},
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\label{orgabf1b1f}
+
+\label{org91c3f94}
+
+\section{Source VM instruction set}
+\label{sec:orgdf5f0e0}
+\label{orga35b075}
+
+\label{orgaf84f79}
+Table of Contents
+
+\begin{itemize}
+\item \hyperref[sec:orgdf5f0e0]{Source VM instruction set}
+
+\begin{itemize}
+\item \hyperref[sec:orgd013882]{General faults}
+\item \hyperref[sec:org6c2c333]{Mnemonic conventions}
+\item \hyperref[sec:org6af44d0]{Instruction entry format}
+
+\begin{itemize}
+\item \hyperref[sec:org91c15ea]{\texttt{mnemonic}: instruction name}
+\end{itemize}
+
+\item \hyperref[sec:org33d7595]{Instructions}
+
+\begin{itemize}
+\item \hyperref[sec:orgbc7ec8d]{\texttt{nop}: no-op}
+\item \hyperref[sec:orgc756866]{\texttt{ldc.i}: load constant integer}
+\item \hyperref[sec:org5cf9345]{\texttt{lgc.i}: load boxed
+constant integer}
+\item \hyperref[sec:orgd3689f6]{\texttt{ldc.f32}: load
+constant number (single-precision)}
+\item \hyperref[sec:orgee247e4]{\texttt{lgc.f32}:
+load boxed constant number (single-precision)}
+\item \hyperref[sec:org6bba761]{\texttt{ldc.f64}: load
+constant number (double-precision)}
+\item \hyperref[sec:orgae88789]{\texttt{lgc.f64}:
+load boxed constant number (double-precision)}
+\item \hyperref[sec:org628c82c]{\texttt{ldc.b.0}: load constant false}
+\item \hyperref[sec:org45a4edf]{\texttt{ldc.b.1}: load constant true}
+\item \hyperref[sec:orgdf93d05]{\texttt{lgc.b.0}: load boxed
+constant false}
+\item \hyperref[sec:org79cc95f]{\texttt{lgc.b.1}: load boxed
+constant true}
+\item \hyperref[sec:org5d44e29]{\texttt{lgc.u}: load boxed
+constant undefined}
+\item \hyperref[sec:org1969f37]{\texttt{lgc.n}: load boxed constant
+null}
+\item \hyperref[sec:org2f69311]{\texttt{lgc.s}: load constant string}
+\item \hyperref[sec:org5cb332a]{\texttt{pop.g}: pop boxed value
+from stack}
+\item \hyperref[sec:org55a65aa]{\texttt{pop.b}: pop boolean from
+stack}
+\item \hyperref[sec:orgf652769]{\texttt{pop.f}: pop number from stack}
+\item \hyperref[sec:orgd3666a0]{\texttt{add.g}: add boxed values}
+\item \hyperref[sec:org117c408]{\texttt{add.f}: add numbers}
+\item \hyperref[sec:org379b868]{\texttt{sub.g}: subtract boxed values}
+\item \hyperref[sec:org371fd15]{\texttt{sub.f}: subtract numbers}
+\item \hyperref[sec:org742c65a]{\texttt{mul.g}: multiply boxed values}
+\item \hyperref[sec:org29a8cb0]{\texttt{mul.f}: multiply numbers}
+\item \hyperref[sec:org97eb268]{\texttt{div.g}: divide boxed values}
+\item \hyperref[sec:org9ea386e]{\texttt{div.f}: divide numbers}
+\item \hyperref[sec:org6afbbf6]{\texttt{mod.g}: modulo boxed values}
+\item \hyperref[sec:orgf4bf035]{\texttt{mod.f}: modulo numbers}
+\item \hyperref[sec:org4404772]{\texttt{not.g}: negate boxed value}
+\item \hyperref[sec:org446322c]{\texttt{not.b}: negate boolean}
+\item \hyperref[sec:org5479aa3]{\texttt{lt.g}: less than, boxed
+operands}
+\item \hyperref[sec:orga91f7a6]{\texttt{lt.f}: less than, number
+operands}
+\item \hyperref[sec:orge89bbc6]{\texttt{gt.g}: greater than, boxed
+operands}
+\item \hyperref[sec:org3ea3931]{\texttt{gt.f}: greater than,
+number operands}
+\item \hyperref[sec:orgf9e2550]{\texttt{le.g}: less than
+or equal to, boxed operands}
+\item \hyperref[sec:orgef83a7a]{\texttt{le.f}: less than
+or equal to, number operands}
+\item \hyperref[sec:org7e275af]{\texttt{ge.g}: greater
+than or equal to, boxed operands}
+\item \hyperref[sec:org24757e3]{\texttt{ge.f}: greater
+than or equal to, number operands}
+\item \hyperref[sec:orgb222de9]{\texttt{eq.g}: equal, boxed operands}
+\item \hyperref[sec:orge0a190c]{\texttt{eq.f}: equal, number operands}
+\item \hyperref[sec:org73ca0ae]{\texttt{eq.b}: equal, boolean operands}
+\item \hyperref[sec:org1d41a06]{\texttt{new.c}: create function}
+\item \hyperref[sec:orgcc2c694]{\texttt{new.a}: create array}
+\item \hyperref[sec:orgbae78d9]{\texttt{ldl.g}: load
+boxed value from current environment}
+\item \hyperref[sec:orgb7a98c2]{\texttt{ldl.f}: load
+number from current environment}
+\item \hyperref[sec:org671ebc7]{\texttt{ldl.b}: load
+boolean from current environment}
+\item \hyperref[sec:org466d475]{\texttt{stl.g}:
+store boxed value into current environment}
+\item \hyperref[sec:org711619f]{\texttt{stl.b}: store
+boolean into current environment}
+\item \hyperref[sec:org29b23b4]{\texttt{stl.f}: store
+number into current environment}
+\item \hyperref[sec:org445285b]{\texttt{ldp.g}: load
+boxed value from (parent) environment}
+\item \hyperref[sec:orgf48099d]{\texttt{ldp.f}: load
+number from (parent) environment}
+\item \hyperref[sec:org74003ff]{\texttt{ldp.b}: load
+boolean from (parent) environment}
+\item \hyperref[sec:org3861b91]{\texttt{stp.g}:
+store boxed value into (parent) environment}
+\item \hyperref[sec:org15feb28]{\texttt{stp.b}: store
+boolean into (parent) environment}
+\item \hyperref[sec:org4696eef]{\texttt{stp.f}: store
+number into (parent) environment}
+\item \hyperref[sec:org0b3a1ff]{\texttt{lda.g}: load boxed value
+from array}
+\item \hyperref[sec:orgb1de169]{\texttt{lda.b}: load boolean from
+array}
+\item \hyperref[sec:orgdc8e9a7]{\texttt{lda.f}: load number from
+array}
+\item \hyperref[sec:org4724d89]{\texttt{sta.g}: store boxed value
+into array}
+\item \hyperref[sec:org8e9e3f6]{\texttt{sta.b}: store boolean into
+array}
+\item \hyperref[sec:org3dfaf54]{\texttt{sta.f}: store number into
+array}
+\item \hyperref[sec:orge20199f]{\texttt{br.t}: branch if true}
+\item \hyperref[sec:org6c72b12]{\texttt{br.f}: branch if false}
+\item \hyperref[sec:org71bb9a3]{\texttt{br}: branch}
+\item \hyperref[sec:orgeb956da]{\texttt{jmp}: jump}
+\item \hyperref[sec:orgc60978b]{\texttt{call}: call function}
+\item \hyperref[sec:org026b562]{\texttt{call.t}: tail call function}
+\item \hyperref[sec:org99bb90f]{\texttt{call.p}: call primitive
+function}
+\item \hyperref[sec:orgd22c74d]{\texttt{call.t.p}: tail call
+primitive function}
+\item \hyperref[sec:org008ae6e]{\texttt{call.v}:
+call VM-internal function/native function}
+\item \hyperref[sec:org22cfce9]{\texttt{call.t.v}:
+tail call VM-internal function/native function}
+\item \hyperref[sec:org5c86ae1]{\texttt{ret.g}: return boxed value}
+\item \hyperref[sec:org24d7891]{\texttt{ret.f}: return number}
+\item \hyperref[sec:org489d37c]{\texttt{ret.b}: return boolean}
+\item \hyperref[sec:org4462eb4]{\texttt{ret.u}: return undefined}
+\item \hyperref[sec:org02d0940]{\texttt{ret.n}: return null}
+\item \hyperref[sec:orgde7ff7a]{\texttt{dup}: duplicate top of stack}
+\item \hyperref[sec:orgb7d0128]{\texttt{newenv}: create new
+environment}
+\item \hyperref[sec:org4cc850b]{\texttt{popenv}: pop environment}
+\end{itemize}
+
+\item \hyperref[sec:org22a9c67]{Primitive functions}
+\item \hyperref[sec:org5fffbe9]{Machine-parseable instruction
+set}
+\end{itemize}
+\end{itemize}
+
+\subsection{General faults}
+\label{sec:orgd013882}
+Faults specific to particular instructions are documented in the entries
+below.
+
+Aside from those, the following faults can occur; these are presented
+here as they apply to multiple instructions.
+
+\begin{itemize}
+\item Pushing onto a full stack
+
+\item Popping from an empty stack
+
+\item Loading from or storing into an invalid index in an environment
+
+\item Running out of memory
+\end{itemize}
+
+\subsection{Mnemonic conventions}
+\label{sec:org6c2c333}
+For instructions that operate on values, the type of the operand(s) is
+represented in the instruction mnemonic by a letter:
+
+\begin{itemize}
+\item \texttt{u} undefined
+
+\item \texttt{n} null
+
+\item \texttt{b} boolean
+
+\item \texttt{i} integer
+
+\item \texttt{f} number (float)
+
+\item \texttt{s} string
+
+\item \texttt{a} array
+
+\item \texttt{c} function
+
+\item \texttt{g} boxed value
+\end{itemize}
+
+\subsection{Instruction entry format}
+\label{sec:org6af44d0}
+\subsubsection{\texttt{mnemonic}: instruction name}
+\label{sec:org91c15ea}
+Format: \texttt{opcode <argument1: type> <argument2: type>} (N bytes)
+
+The binary format byte count is omitted for instructions with no
+arguments. They are 1 byte long.
+
+Stack before: \ldots{}​, \texttt{value1: type}, \texttt{value2: type} ■
+
+Stack after: \ldots{}​, \texttt{value3: type} ■
+
+■ represents the top of the stack.
+
+The rest of the entry details what the opcode does, and any possible
+faults.
+
+\subsection{Instructions}
+\label{sec:org33d7595}
+\subsubsection{\texttt{nop}: no-op}
+\label{sec:orgbc7ec8d}
+Format: \texttt{0x00}
+
+Does not modify the stack.
+
+Does nothing.
+
+\subsubsection{\texttt{ldc.i}: load constant integer}
+\label{sec:orgc756866}
+Format: \texttt{0x01 <value: i32>} (5 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<value>: number} ■
+
+Pushes an integer with value equal to \texttt{<value>} onto the stack.
+
+\subsubsection{\texttt{lgc.i}: load boxed constant integer}
+\label{sec:org5cf9345}
+Format: \texttt{0x02 <value: i32>} (5 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<value>: boxed (number)} ■
+
+Pushes a boxed integer with value equal to \texttt{<value>} onto the stack.
+
+\subsubsection{\texttt{ldc.f32}: load constant number (single-precision)}
+\label{sec:orgd3689f6}
+Format: \texttt{0x03 <number: f32>} (5 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<number>: number} ■
+
+Pushes a number with value equal to \texttt{<number>} onto the stack.
+
+\subsubsection{\texttt{lgc.f32}: load boxed constant number (single-precision)}
+\label{sec:orgee247e4}
+Format: \texttt{0x04 <number: f32>} (5 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<number>: boxed (number)} ■
+
+Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
+
+\subsubsection{\texttt{ldc.f64}: load constant number (double-precision)}
+\label{sec:org6bba761}
+Format: \texttt{0x05 <number: f64>} (9 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<number>: number} ■
+
+Pushes a number with value equal to \texttt{<number>} onto the stack.
+
+\subsubsection{\texttt{lgc.f64}: load boxed constant number (double-precision)}
+\label{sec:orgae88789}
+Format: \texttt{0x06 <number: f64>} (9 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<number>: boxed (number)} ■
+
+Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
+
+\subsubsection{\texttt{ldc.b.0}: load constant false}
+\label{sec:org628c82c}
+Format: \texttt{0x07}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{false: boolean} ■
+
+Pushes the boolean \texttt{false} onto the stack.
+
+\subsubsection{\texttt{ldc.b.1}: load constant true}
+\label{sec:org45a4edf}
+Format: \texttt{0x08}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{true: boolean} ■
+
+Pushes the boolean \texttt{true} onto the stack.
+
+\subsubsection{\texttt{lgc.b.0}: load boxed constant false}
+\label{sec:orgdf93d05}
+Format: \texttt{0x09}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{false: boxed (boolean)} ■
+
+Pushes a boxed boolean \texttt{false} onto the stack.
+
+\subsubsection{\texttt{lgc.b.1}: load boxed constant true}
+\label{sec:org79cc95f}
+Format: \texttt{0x0A}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{true: boxed (boolean)} ■
+
+Pushes a boxed boolean \texttt{true} onto the stack.
+
+\subsubsection{\texttt{lgc.u}: load boxed constant undefined}
+\label{sec:org5d44e29}
+Format: \texttt{0x0B}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{undefined: boxed (undefined)} ■
+
+Pushes a boxed \texttt{undefined} onto the stack.
+
+\subsubsection{\texttt{lgc.n}: load boxed constant null}
+\label{sec:org1969f37}
+Format: \texttt{0x0C}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{null: boxed (null)} ■
+
+Pushes a boxed \texttt{null} onto the stack.
+
+\subsubsection{\texttt{lgc.s}: load constant string}
+\label{sec:org2f69311}
+Format: \texttt{0x0D <address>} (5 bytes)
+
+In the JSON format, the string literal is specified directly instead.
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<string>: boxed (string)} ■
+
+Pushes the string at the given address onto the stack.
+
+The string at the given address should be null-terminated.
+
+\subsubsection{\texttt{pop.g}: pop boxed value from stack}
+\label{sec:org5cb332a}
+Format: \texttt{0x0E}
+
+Stack before: \ldots{}​, \texttt{<value>: boxed} ■
+
+Stack after: \ldots{}​ ■
+
+Pops a boxed value off the stack.
+
+Behaviour is undefined if \texttt{<value>} is not a boxed value.
+
+\subsubsection{\texttt{pop.b}: pop boolean from stack}
+\label{sec:org55a65aa}
+Format: \texttt{0x0F}
+
+Stack before: \ldots{}​, \texttt{<value>: boolean} ■
+
+Stack after: \ldots{}​ ■
+
+Pops a boolean off the stack.
+
+Behaviour is undefined if \texttt{<value>} is not a boolean.
+
+\subsubsection{\texttt{pop.f}: pop number from stack}
+\label{sec:orgf652769}
+Format: \texttt{0x10}
+
+Stack before: \ldots{}​, \texttt{<value>: number} ■
+
+Stack after: \ldots{}​ ■
+
+Pops a number off the stack.
+
+Behaviour is undefined if \texttt{<value>} is not a number.
+
+\subsubsection{\texttt{add.g}: add boxed values}
+\label{sec:orgd3666a0}
+Format: \texttt{0x11}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are strings, pushes their concatenation
+\texttt{<c> = <a> + <b>} onto the stack.
+
+If \texttt{<a>} and \texttt{<b>} are numbers, pushes their sum \texttt{<c> = <a> + <b>} onto
+the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{add.f}: add numbers}
+\label{sec:org117c408}
+Format: \texttt{0x12}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: number} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their sum
+\texttt{<c> = <a> + <b>} onto the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{sub.g}: subtract boxed values}
+\label{sec:org379b868}
+Format: \texttt{0x13}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are numbers, pushes their difference
+\texttt{<c> = <a> - <b>} onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{sub.f}: subtract numbers}
+\label{sec:org371fd15}
+Format: \texttt{0x14}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: number} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their difference
+\texttt{<c> = <a> - <b>} onto the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{mul.g}: multiply boxed values}
+\label{sec:org742c65a}
+Format: \texttt{0x15}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are numbers, pushes their product \texttt{<c> = <a> * <b>}
+onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{mul.f}: multiply numbers}
+\label{sec:org29a8cb0}
+Format: \texttt{0x16}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: number} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their product
+\texttt{<c> = <a> * <b>} onto the stack.
+
+If \texttt{<b>} is the number 0, a fault occurs.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{div.g}: divide boxed values}
+\label{sec:org97eb268}
+Format: \texttt{0x17}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are numbers, pushes their quotient \texttt{<c> = <a> / <b>}
+onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{div.f}: divide numbers}
+\label{sec:org9ea386e}
+Format: \texttt{0x18}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: number} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their quotient
+\texttt{<c> = <a> / <b>} onto the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{mod.g}: modulo boxed values}
+\label{sec:org6afbbf6}
+Format: \texttt{0x19}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are numbers, pushes \texttt{<c> = <a> \% <b>} onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{mod.f}: modulo numbers}
+\label{sec:orgf4bf035}
+Format: \texttt{0x1A}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: number} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> \% <b>} onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{not.g}: negate boxed value}
+\label{sec:org4404772}
+Format: \texttt{0x1B}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<b>: boxed} ■
+
+Pops \texttt{<a>} off the stack.
+
+If \texttt{<a>} is a boolean, pushes its negation \texttt{<b>} onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{not.b}: negate boolean}
+\label{sec:org446322c}
+Format: \texttt{0x1C}
+
+Stack before: \ldots{}​, \texttt{<a>: boolean} ■
+
+Stack after: \ldots{}​, \texttt{<b>: boolean} ■
+
+Pops \texttt{<a>} off the stack, then pushes its negation \texttt{<b>} onto the stack.
+
+If \texttt{<a>} is not a boolean, behaviour is undefined.
+
+\subsubsection{\texttt{lt.g}: less than, boxed operands}
+\label{sec:org5479aa3}
+Format: \texttt{0x1D}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
+\texttt{<c> = <a> < <b>}, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{lt.f}: less than, number operands}
+\label{sec:orga91f7a6}
+Format: \texttt{0x1E}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> < <b>} onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{gt.g}: greater than, boxed operands}
+\label{sec:orge89bbc6}
+Format: \texttt{0x1F}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
+\texttt{<c> = <a> > <b>}, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{gt.f}: greater than, number operands}
+\label{sec:org3ea3931}
+Format: \texttt{0x20}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> > <b>} onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{le.g}: less than or equal to, boxed operands}
+\label{sec:orgf9e2550}
+Format: \texttt{0x21}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
+\texttt{<c> = <a> <} <b>=, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{le.f}: less than or equal to, number operands}
+\label{sec:orgef83a7a}
+Format: \texttt{0x22}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> <} <b>= onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{ge.g}: greater than or equal to, boxed operands}
+\label{sec:org7e275af}
+Format: \texttt{0x23}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
+\texttt{<c> = <a> >} <b>=, with the obvious meaning if both operands are
+numbers, and comparing the operands by lexicographical order if they are
+strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{ge.f}: greater than or equal to, number operands}
+\label{sec:org24757e3}
+Format: \texttt{0x24}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> >} <b>= onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{eq.g}: equal, boxed operands}
+\label{sec:orgb222de9}
+Format: \texttt{0x25}
+
+Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+
+If \texttt{<a>} and \texttt{<b>} are of different types, pushes \texttt{false} onto the
+stack.
+
+If \texttt{<a>} and \texttt{<b>} are both \texttt{undefined} or both \texttt{null}, pushes \texttt{true}
+onto the stack.
+
+If \texttt{<a>} and \texttt{<b>} are both booleans, both numbers or both strings,
+pushes \texttt{true} onto the stack if they have the same value, otherwise
+pushes \texttt{false} onto the stack.
+
+If \texttt{<a>} and \texttt{<b>} are both functions or both arrays, pushes \texttt{true} onto
+the stack if they are referentially equal i.e. they refer to the exact
+same array or function object, otherwise pushes \texttt{false} onto the stack.
+
+The above cases are exhaustive.
+
+\subsubsection{\texttt{eq.f}: equal, number operands}
+\label{sec:orge0a190c}
+Format: \texttt{0x26}
+
+Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> =} <b>= onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+
+\subsubsection{\texttt{eq.b}: equal, boolean operands}
+\label{sec:org73ca0ae}
+Format: \texttt{0x27}
+
+Stack before: \ldots{}​, \texttt{<a>: boolean}, \texttt{<b>: boolean} ■
+
+Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+
+Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> =} <b>= onto
+the stack.
+
+If \texttt{<a>} and \texttt{<b>} are not booleans, behaviour is undefined.
+
+\subsubsection{\texttt{new.c}: create function}
+\label{sec:org1d41a06}
+Format: \texttt{0x28 <address>} (5 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<c>: boxed (function)} ■
+
+Pushes a new function object \texttt{<c>} onto the stack referring to the
+function at the given address.
+
+\subsubsection{\texttt{new.a}: create array}
+\label{sec:orgcc2c694}
+Format: \texttt{0x29}
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: boxed (array)} ■
+
+Pushes a new empty array onto the stack.
+
+\subsubsection{\texttt{ldl.g}: load boxed value from current environment}
+\label{sec:orgbae78d9}
+Format: \texttt{0x2A <index: u8>} (2 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: boxed} ■
+
+Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
+the stack.
+
+If the value at index \texttt{index} in the current environment is not a boxed
+value, behaviour is undefined.
+
+\subsubsection{\texttt{ldl.f}: load number from current environment}
+\label{sec:orgb7a98c2}
+Format: \texttt{0x2B <index: u8>} (2 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: number} ■
+
+Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
+the stack.
+
+If the value at index \texttt{index} in the current environment is not a
+number, behaviour is undefined.
+
+\subsubsection{\texttt{ldl.b}: load boolean from current environment}
+\label{sec:org671ebc7}
+Format: \texttt{0x2C <index: u8>} (2 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: boolean} ■
+
+Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
+the stack.
+
+If the value at index \texttt{index} in the current environment is not a
+boolean, behaviour is undefined.
+
+\subsubsection{\texttt{stl.g}: store boxed value into current environment}
+\label{sec:org466d475}
+Format: \texttt{0x2D <index: u8>} (2 bytes)
+
+Stack before: \ldots{}​, \texttt{<a>: boxed} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
+environment.
+
+If \texttt{<a>} is not a boxed value, behaviour is undefined.
+
+\subsubsection{\texttt{stl.b}: store boolean into current environment}
+\label{sec:org711619f}
+Format: \texttt{0x2E <index: u8>} (2 bytes)
+
+Stack before: \ldots{}​, \texttt{<a>: boolean} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
+environment.
+
+If \texttt{<a>} is not a boolean, behaviour is undefined.
+
+\subsubsection{\texttt{stl.f}: store number into current environment}
+\label{sec:org29b23b4}
+Format: \texttt{0x2F <index: u8>} (2 bytes)
+
+Stack before: \ldots{}​, \texttt{<a>: number} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
+environment.
+
+If \texttt{<a>} is not a number, behaviour is undefined.
+
+\subsubsection{\texttt{ldp.g}: load boxed value from (parent) environment}
+\label{sec:org445285b}
+Format: \texttt{0x30 <index: u8> <envindex: u8>} (3 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: boxed} ■
+
+Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
+current environment onto the stack. If =envindex} is \texttt{0}, this is
+equivalent to \texttt{ldl.g}.
+
+If the value is not a boxed value, behaviour is undefined.
+
+\subsubsection{\texttt{ldp.f}: load number from (parent) environment}
+\label{sec:orgf48099d}
+Format: \texttt{0x31 <index: u8> <envindex: u8>} (3 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: number} ■
+
+Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
+current environment onto the stack. If =envindex} is \texttt{0}, this is
+equivalent to \texttt{ldl.f}.
+
+If the value is not a number, behaviour is undefined.
+
+\subsubsection{\texttt{ldp.b}: load boolean from (parent) environment}
+\label{sec:org74003ff}
+Format: \texttt{0x32 <index: u8> <envindex: u8>} (3 bytes)
+
+Stack before: \ldots{}​ ■
+
+Stack after: \ldots{}​, \texttt{<a>: boolean} ■
+
+Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
+current environment onto the stack. If =envindex} is \texttt{0}, this is
+equivalent to \texttt{ldl.f}.
+
+If the value is not a boolean, behaviour is undefined.
+
+\subsubsection{\texttt{stp.g}: store boxed value into (parent) environment}
+\label{sec:org3861b91}
+Format: \texttt{0x33 <index: u8> <envindex: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a>: boxed} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
+=envindex=th parent of the current environment.
+
+If \texttt{<a>} is not a boxed value, behaviour is undefined.
+
+\subsubsection{\texttt{stp.b}: store boolean into (parent) environment}
+\label{sec:org15feb28}
+Format: \texttt{0x34 <index: u8> <envindex: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a>: boolean} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
+=envindex=th parent of the current environment.
+
+If \texttt{<a>} is not a boolean, behaviour is undefined.
+
+\subsubsection{\texttt{stp.f}: store number into (parent) environment}
+\label{sec:org4696eef}
+Format: \texttt{0x35 <index: u8> <envindex: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a>: number} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
+=envindex=th parent of the current environment.
+
+If \texttt{<a>} is not a number, behaviour is undefined.
+
+\subsubsection{\texttt{lda.g}: load boxed value from array}
+\label{sec:org0b3a1ff}
+Format: \texttt{0x36}
+
+Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number} ■
+
+Stack after: \ldots{}​, \texttt{<value>: boxed} ■
+
+Pops \texttt{index} and \texttt{array} off the stack.
+
+If \texttt{index} is a non-negative integer, pushes the value at index \texttt{index}
+in \texttt{array} onto the stack.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if the value at index \texttt{index} in array is not a
+boxed value.
+
+\subsubsection{\texttt{lda.b}: load boolean from array}
+\label{sec:orgb1de169}
+Format: \texttt{0x37}
+
+Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number} ■
+
+Stack after: \ldots{}​, \texttt{<value>: boolean} ■
+
+Pops \texttt{index} and \texttt{array} off the stack.
+
+If \texttt{index} is a non-negative integer, pushes the value at index \texttt{index}
+in \texttt{array} onto the stack.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if the value at index \texttt{index} in array is not a
+boolean.
+
+\subsubsection{\texttt{lda.f}: load number from array}
+\label{sec:orgdc8e9a7}
+Format: \texttt{0x38}
+
+Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number} ■
+
+Stack after: \ldots{}​, \texttt{<value>: number} ■
+
+Pops \texttt{index} and \texttt{array} off the stack.
+
+If \texttt{index} is a non-negative integer, pushes the value at index \texttt{index}
+in \texttt{array} onto the stack.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if the value at index \texttt{index} in array is not a
+number.
+
+\subsubsection{\texttt{sta.g}: store boxed value into array}
+\label{sec:org4724d89}
+Format: \texttt{0x39}
+
+Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
+\texttt{<value>: boxed} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
+
+If \texttt{index} is a non-negative integer, stores \texttt{value} into index \texttt{index}
+in \texttt{array}.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if \texttt{value} is not a boxed value.
+
+\subsubsection{\texttt{sta.b}: store boolean into array}
+\label{sec:org8e9e3f6}
+Format: \texttt{0x3A}
+
+Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
+\texttt{<value>: boolean} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
+
+If \texttt{index} is a non-negative integer, stores \texttt{value} into index \texttt{index}
+in \texttt{array}.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if \texttt{value} is not a boolean.
+
+\subsubsection{\texttt{sta.f}: store number into array}
+\label{sec:org3dfaf54}
+Format: \texttt{0x3B}
+
+Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
+\texttt{<value>: number} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
+
+If \texttt{index} is a non-negative integer, stores \texttt{value} into index \texttt{index}
+in \texttt{array}.
+
+Otherwise, a fault occurs.
+
+Behaviour is undefined if \texttt{value} is not a number.
+
+\subsubsection{\texttt{br.t}: branch if true}
+\label{sec:orge20199f}
+Format: \texttt{0x3C <offset>} (5 bytes)
+
+Stack before: \ldots{}​, \texttt{<condition>: boolean} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{condition} off the stack.
+
+If \texttt{condition} is a boolean and is true, skips \texttt{offset} bytes starting
+from after the current instruction. That is, \texttt{br.t 0} is a no-op.
+
+Note that \texttt{offset} can be negative.
+
+If \texttt{condition} is a boolean and is false, does nothing.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{br.f}: branch if false}
+\label{sec:org6c72b12}
+Format: \texttt{0x3D <offset>} (5 bytes)
+
+Stack before: \ldots{}​, \texttt{<condition>: boolean} ■
+
+Stack after: \ldots{}​ ■
+
+Pops \texttt{condition} off the stack.
+
+If \texttt{condition} is a boolean and is false, skips \texttt{offset} bytes starting
+from after the current instruction. That is, \texttt{br.f 0} is a no-op.
+
+Note that \texttt{offset} can be negative.
+
+If \texttt{condition} is a boolean and is true, does nothing.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texttt{br}: branch}
+\label{sec:org71bb9a3}
+Format: \texttt{0x3E <offset>} (5 bytes)
+
+Does not modify the stack.
+
+Skips \texttt{offset} bytes starting from after the current instruction. That
+is, \texttt{br 0} is a no-op.
+
+Note that \texttt{offset} can be negative.
+
+\subsubsection{\texttt{jmp}: jump}
+\label{sec:orgeb956da}
+Format: \texttt{0x3F <address>} (5 bytes)
+
+Jumps to \texttt{address}. Note: the current environment and stack are
+unchanged.
+
+\subsubsection{\texttt{call}: call function}
+\label{sec:orgc60978b}
+Format: \texttt{0x40 <numargs: u8>} (2 bytes)
+
+Stack before: \ldots{}​, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​,
+\texttt{<aN>} ■
+
+Stack after: \ldots{}​, \texttt{<r>} ■
+
+Pops the arguments to be passed to the function off the stack in reverse
+order, followed by the function to be called. That is, pop the last
+argument, followed by the second last, and so on, until the first
+argument, then the function.
+
+Calls the function, and then pushes the return value of the function
+onto the stack.
+
+The type of arguments to be popped, and the type of the return value, is
+determined by the function header as referred to by the function object.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the types specified in the function header.
+
+A fault occurs if the number of arguments specified in \texttt{<numargs>} is
+different from the number of arguments expected by the function as
+specified in the function header.
+
+\subsubsection{\texttt{call.t}: tail call function}
+\label{sec:org026b562}
+Format: \texttt{0x41 <numargs: u8>} (2 bytes)
+
+Stack before: \ldots{}​, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​,
+\texttt{<aN>} ■
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order, followed by the function to be called. That is, pop the last
+argument, followed by the second last, and so on, until the first
+argument, then the function.
+
+Calls the function. The return value of the callee function will become
+the return value of the current function, and execution returns to the
+caller of the current function.
+
+The type of arguments to be popped, and the type of the return value, is
+determined by the function header as referred to by the function object.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the types specified in the function header.
+
+A fault occurs if the number of arguments specified in \texttt{<numargs>} is
+different from the number of arguments expected by the function as
+specified in the function header.
+
+\subsubsection{\texttt{call.p}: call primitive function}
+\label{sec:org99bb90f}
+Format: \texttt{0x42 <id: u8> <numargs: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+
+Stack after: \ldots{}​, \texttt{<r>} ■
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the primitive function with the given \texttt{id}, and then pushes the
+return value of the function onto the stack.
+
+The types of the arguments are as specified in the list of primitive
+functions.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texttt{call.t.p}: tail call primitive function}
+\label{sec:orgd22c74d}
+Format: \texttt{0x43 <id: u8> <numargs: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the primitive function with the given \texttt{id}. The return value of
+the primitive function will become the return value of the current
+function, and execution returns to the caller of the current function.
+
+The types of the arguments are as specified in the list of primitive
+functions.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texttt{call.v}: call VM-internal function/native function}
+\label{sec:org008ae6e}
+Format: \texttt{0x44 <id: u8> <numargs: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+
+Stack after: \ldots{}​, \texttt{<r>} ■
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the VM-internal function with the given \texttt{id}, and then pushes the
+return value of the function onto the stack.
+
+VM-internal functions are specified by the VM implementation.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texttt{call.t.v}: tail call VM-internal function/native function}
+\label{sec:org22cfce9}
+Format: \texttt{0x45 <id: u8> <numargs: u8>} (3 bytes)
+
+Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the VM-internal function with the given \texttt{id}. The return value of
+the VM-internal function will become the return value of the current
+function, and execution returns to the caller of the current function.
+
+VM-internal functions are specified by the VM implementation.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texttt{ret.g}: return boxed value}
+\label{sec:org5c86ae1}
+Format: \texttt{0x46}
+
+Stack before: \ldots{}​, \texttt{<retval>: boxed} ■
+
+Stack after: (the stack is destroyed)
+
+Pops \texttt{retval} off the stack. Makes \texttt{retval} the return value of the
+current function, and returns execution to the caller of the current
+function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not a boxed value.
+
+Behaviour is undefined if \texttt{retval} is not a boxed value.
+
+\subsubsection{\texttt{ret.f}: return number}
+\label{sec:org24d7891}
+Format: \texttt{0x47}
+
+Stack before: \ldots{}​, \texttt{<retval>: number} ■
+
+Stack after: (the stack is destroyed)
+
+Pops \texttt{retval} off the stack. Makes \texttt{retval} the return value of the
+current function, and returns execution to the caller of the current
+function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not a number.
+
+Behaviour is undefined if \texttt{retval} is not a number.
+
+\subsubsection{\texttt{ret.b}: return boolean}
+\label{sec:org489d37c}
+Format: \texttt{0x48}
+
+Stack before: \ldots{}​, \texttt{<retval>: boolean} ■
+
+Stack after: (the stack is destroyed)
+
+Pops \texttt{retval} off the stack. Makes \texttt{retval} the return value of the
+current function, and returns execution to the caller of the current
+function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not a boolean.
+
+Behaviour is undefined if \texttt{retval} is not a boolean.
+
+\subsubsection{\texttt{ret.u}: return undefined}
+\label{sec:org4462eb4}
+Format: \texttt{0x49}
+
+Stack before: \ldots{}​ ■
+
+Stack after: (the stack is destroyed)
+
+Makes \texttt{undefined} the return value of the current function, and returns
+execution to the caller of the current function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not undefined.
+
+\subsubsection{\texttt{ret.n}: return null}
+\label{sec:org02d0940}
+Format: \texttt{0x4A}
+
+Stack before: \ldots{}​ ■
+
+Stack after: (the stack is destroyed)
+
+Makes \texttt{null} the return value of the current function, and returns
+execution to the caller of the current function.
+
+A fault occurs if the current function's signature indicates that the
+type of the return value is not undefined.
+
+\subsubsection{\texttt{dup}: duplicate top of stack}
+\label{sec:orgde7ff7a}
+Format: \texttt{0x4B}
+
+Stack before: \ldots{}​ \texttt{<value>} ■
+
+Stack after: \ldots{}​ \texttt{<value>}, \texttt{<value>} ■
+
+Pushes a copy of the topmost value on the stack onto the stack.
+
+A fault occurs if the stack is full, or the stack is empty.
+
+\subsubsection{\texttt{newenv}: create new environment}
+\label{sec:orgb7d0128}
+Format: \texttt{0x4C <size: u8>} (2 bytes)
+
+Does not modify the stack.
+
+Creates a new environment whose parent is the current environment and
+with \texttt{size} entries. Sets the current environment to the new
+environment.
+
+\subsubsection{\texttt{popenv}: pop environment}
+\label{sec:org4cc850b}
+Format: \texttt{0x4D}
+
+Does not modify the stack.
+
+Sets the current environment to be the parent of the current
+environment.
+
+\subsection{Primitive functions}
+\label{sec:org22a9c67}
+The functions below correspond to the functions defined in the
+\href{https://sicp.comp.nus.edu.sg/source/source\_4/}{Source language
+documentation}.
+
+The behaviours of \texttt{display} and \texttt{error} are implementation-defined.
+
+\begin{itemize}
+\item 0x00 accumulate
+
+\item 0x01 append
+
+\item 0x02 array\textsubscript{length}
+
+\item 0x03 build\textsubscript{list}
+
+\item 0x04 build\textsubscript{stream}
+
+\item 0x05 display
+
+\item 0x06 draw\textsubscript{data}
+
+\item 0x07 enum\textsubscript{list}
+
+\item 0x08 enum\textsubscript{stream}
+
+\item 0x09 equal
+
+\item 0x0a error
+
+\item 0x0b eval\textsubscript{stream}
+
+\item 0x0c filter
+
+\item 0x0d for\textsubscript{each}
+
+\item 0x0e head
+
+\item 0x0f integers\textsubscript{from}
+
+\item 0x10 is\textsubscript{array}
+
+\item 0x11 is\textsubscript{boolean}
+
+\item 0x12 is\textsubscript{function}
+
+\item 0x13 is\textsubscript{list}
+
+\item 0x14 is\textsubscript{null}
+
+\item 0x15 is\textsubscript{number}
+
+\item 0x16 is\textsubscript{pair}
+
+\item 0x17 is\textsubscript{stream}
+
+\item 0x18 is\textsubscript{string}
+
+\item 0x19 is\textsubscript{undefined}
+
+\item 0x1a length
+
+\item 0x1b list
+
+\item 0x1c list\textsubscript{ref}
+
+\item 0x1d list\textsubscript{to}\textsubscript{stream}
+
+\item 0x1e list\textsubscript{to}\textsubscript{string}
+
+\item 0x1f map
+
+\item 0x20 math\textsubscript{abs}
+
+\item 0x21 math\textsubscript{acos}
+
+\item 0x22 math\textsubscript{acosh}
+
+\item 0x23 math\textsubscript{asin}
+
+\item 0x24 math\textsubscript{asinh}
+
+\item 0x25 math\textsubscript{atan}
+
+\item 0x26 math\textsubscript{atan2}
+
+\item 0x27 math\textsubscript{atanh}
+
+\item 0x28 math\textsubscript{cbrt}
+
+\item 0x29 math\textsubscript{ceil}
+
+\item 0x2a math\textsubscript{clz32}
+
+\item 0x2b math\textsubscript{cos}
+
+\item 0x2c math\textsubscript{cosh}
+
+\item 0x2d math\textsubscript{exp}
+
+\item 0x2e math\textsubscript{expm1}
+
+\item 0x2f math\textsubscript{floor}
+
+\item 0x30 math\textsubscript{fround}
+
+\item 0x31 math\textsubscript{hypot}
+
+\item 0x32 math\textsubscript{imul}
+
+\item 0x33 math\textsubscript{log}
+
+\item 0x34 math\textsubscript{log1p}
+
+\item 0x35 math\textsubscript{log2}
+
+\item 0x36 math\textsubscript{log10}
+
+\item 0x37 math\textsubscript{max}
+
+\item 0x38 math\textsubscript{min}
+
+\item 0x39 math\textsubscript{pow}
+
+\item 0x3a math\textsubscript{random}
+
+\item 0x3b math\textsubscript{round}
+
+\item 0x3c math\textsubscript{sign}
+
+\item 0x3d math\textsubscript{sin}
+
+\item 0x3e math\textsubscript{sinh}
+
+\item 0x3f math\textsubscript{sqrt}
+
+\item 0x40 math\textsubscript{tan}
+
+\item 0x41 math\textsubscript{tanh}
+
+\item 0x42 math\textsubscript{trunc}
+
+\item 0x43 member
+
+\item 0x44 pair
+
+\item 0x45 parse\textsubscript{int}
+
+\item 0x46 remove
+
+\item 0x47 remove\textsubscript{all}
+
+\item 0x48 reverse
+
+\item 0x49 runtime
+
+\item 0x4a set\textsubscript{head}
+
+\item 0x4b set\textsubscript{tail}
+
+\item 0x4c stream
+
+\item 0x4d stream\textsubscript{append}
+
+\item 0x4e stream\textsubscript{filter}
+
+\item 0x4f stream\textsubscript{for}\textsubscript{each}
+
+\item 0x50 stream\textsubscript{length}
+
+\item 0x51 stream\textsubscript{map}
+
+\item 0x52 stream\textsubscript{member}
+
+\item 0x53 stream\textsubscript{ref}
+
+\item 0x54 stream\textsubscript{remove}
+
+\item 0x55 stream\textsubscript{remove}\textsubscript{all}
+
+\item 0x56 stream\textsubscript{reverse}
+
+\item 0x57 stream\textsubscript{tail}
+
+\item 0x58 stream\textsubscript{to}\textsubscript{list}
+
+\item 0x59 tail
+
+\item 0x60 stringify
+\end{itemize}
+
+\subsection{Machine-parseable instruction set}
+\label{sec:org5fffbe9}
+A JSON dump of the instruction set follows.
+
+\begin{verbatim}
+[[0, "nop", "no-op"], [1, "ldc.i", "load constant integer"], [2, "lgc.i", "load boxed constant integer"], [3, "ldc.f32", "load constant number (single-precision)"], [4, "lgc.f32", "load boxed constant number (single-precision)"], [5, "ldc.f64", "load constant number (double-precision)"], [6, "lgc.f64", "load boxed constant number (double-precision)"], [7, "ldc.b.0", "load constant false"], [8, "ldc.b.1", "load constant true"], [9, "lgc.b.0", "load boxed constant false"], [10, "lgc.b.1", "load boxed constant true"], [11, "lgc.u", "load boxed constant undefined"], [12, "lgc.n", "load boxed constant null"], [13, "lgc.s", "load constant string"], [14, "pop.g", "pop boxed value from stack"], [15, "pop.b", "pop boolean from stack"], [16, "pop.f", "pop number from stack"], [17, "add.g", "add boxed values"], [18, "add.f", "add numbers"], [19, "sub.g", "subtract boxed values"], [20, "sub.f", "subtract numbers"], [21, "mul.g", "multiply boxed values"], [22, "mul.f", "multiply numbers"], [23, "div.g", "divide boxed values"], [24, "div.f", "divide numbers"], [25, "mod.g", "modulo boxed values"], [26, "mod.f", "modulo numbers"], [27, "not.g", "negate boxed value"], [28, "not.b", "negate boolean"], [29, "lt.g", "less than, boxed operands"], [30, "lt.f", "less than, number operands"], [31, "gt.g", "greater than, boxed operands"], [32, "gt.f", "greater than, number operands"], [33, "le.g", "less than or equal to, boxed operands"], [34, "le.f", "less than or equal to, number operands"], [35, "ge.g", "greater than or equal to, boxed operands"], [36, "ge.f", "greater than or equal to, number operands"], [37, "eq.g", "equal, boxed operands"], [38, "eq.f", "equal, number operands"], [39, "eq.b", "equal, boolean operands"], [40, "new.c", "create function"], [41, "new.a", "create array"], [42, "ldl.g", "load boxed value from current environment"], [43, "ldl.f", "load number from current environment"], [44, "ldl.b", "load boolean from current environment"], [45, "stl.g", "store boxed value into current environment"], [46, "stl.b", "store boolean into current environment"], [47, "stl.f", "store number into current environment"], [48, "ldp.g", "load boxed value from (parent) environment"], [49, "ldp.f", "load number from (parent) environment"], [50, "ldp.b", "load boolean from (parent) environment"], [51, "stp.g", "store boxed value into (parent) environment"], [52, "stp.b", "store boolean into (parent) environment"], [53, "stp.f", "store number into (parent) environment"], [54, "lda.g", "load boxed value from array"], [55, "lda.b", "load boolean from array"], [56, "lda.f", "load number from array"], [57, "sta.g", "store boxed value into array"], [58, "sta.b", "store boolean into array"], [59, "sta.f", "store number into array"], [60, "br.t", "branch if true"], [61, "br.f", "branch if false"], [62, "br", "branch"], [63, "jmp", "jump"], [64, "call", "call function"], [65, "call.t", "tail call function"], [66, "call.p", "call primitive function"], [67, "call.t.p", "tail call primitive function"], [68, "call.v", "call VM-internal function/native function"], [69, "call.t.v", "tail call VM-internal function/native function"], [70, "ret.g", "return boxed value"], [71, "ret.f", "return number"], [72, "ret.b", "return boolean"], [73, "ret.u", "return undefined"], [74, "ret.n", "return null"], [75, "dup", "duplicate top of stack"]]
+\end{verbatim}
+
+\label{org8222156}
+
+\label{orgc2bb649}
+Last updated 2020-03-23 14:15:24 +0800
+\end{document}
