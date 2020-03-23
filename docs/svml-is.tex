@@ -243,11 +243,11 @@ Format: \texttt{opcode <argument1: type> <argument2: type>} (N bytes)
 The binary format byte count is omitted for instructions with no
 arguments. They are 1 byte long.
 
-Stack before: \ldots{}​, \texttt{value1: type}, \texttt{value2: type} ■
+Stack before: \ldots{}, \texttt{value1: type}, \texttt{value2: type} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{value3: type} ■
+Stack after: \ldots{}, \texttt{value3: type} \(\blacksquare\)
 
-■ represents the top of the stack.
+\(\blacksquare\) represents the top of the stack.
 
 The rest of the entry details what the opcode does, and any possible
 faults.
@@ -266,9 +266,9 @@ Does nothing.
 \label{sec:orgc756866}
 Format: \texttt{0x01 <value: i32>} (5 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<value>: number} ■
+Stack after: \ldots{}, \texttt{<value>: number} \(\blacksquare\)
 
 Pushes an integer with value equal to \texttt{<value>} onto the stack.
 
@@ -276,9 +276,9 @@ Pushes an integer with value equal to \texttt{<value>} onto the stack.
 \label{sec:org5cf9345}
 Format: \texttt{0x02 <value: i32>} (5 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<value>: boxed (number)} ■
+Stack after: \ldots{}, \texttt{<value>: boxed (number)} \(\blacksquare\)
 
 Pushes a boxed integer with value equal to \texttt{<value>} onto the stack.
 
@@ -286,9 +286,9 @@ Pushes a boxed integer with value equal to \texttt{<value>} onto the stack.
 \label{sec:orgd3689f6}
 Format: \texttt{0x03 <number: f32>} (5 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<number>: number} ■
+Stack after: \ldots{}, \texttt{<number>: number} \(\blacksquare\)
 
 Pushes a number with value equal to \texttt{<number>} onto the stack.
 
@@ -296,9 +296,9 @@ Pushes a number with value equal to \texttt{<number>} onto the stack.
 \label{sec:orgee247e4}
 Format: \texttt{0x04 <number: f32>} (5 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<number>: boxed (number)} ■
+Stack after: \ldots{}, \texttt{<number>: boxed (number)} \(\blacksquare\)
 
 Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
 
@@ -306,9 +306,9 @@ Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
 \label{sec:org6bba761}
 Format: \texttt{0x05 <number: f64>} (9 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<number>: number} ■
+Stack after: \ldots{}, \texttt{<number>: number} \(\blacksquare\)
 
 Pushes a number with value equal to \texttt{<number>} onto the stack.
 
@@ -316,9 +316,9 @@ Pushes a number with value equal to \texttt{<number>} onto the stack.
 \label{sec:orgae88789}
 Format: \texttt{0x06 <number: f64>} (9 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<number>: boxed (number)} ■
+Stack after: \ldots{}, \texttt{<number>: boxed (number)} \(\blacksquare\)
 
 Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
 
@@ -326,9 +326,9 @@ Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
 \label{sec:org628c82c}
 Format: \texttt{0x07}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{false: boolean} ■
+Stack after: \ldots{}, \texttt{false: boolean} \(\blacksquare\)
 
 Pushes the boolean \texttt{false} onto the stack.
 
@@ -336,9 +336,9 @@ Pushes the boolean \texttt{false} onto the stack.
 \label{sec:org45a4edf}
 Format: \texttt{0x08}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{true: boolean} ■
+Stack after: \ldots{}, \texttt{true: boolean} \(\blacksquare\)
 
 Pushes the boolean \texttt{true} onto the stack.
 
@@ -346,9 +346,9 @@ Pushes the boolean \texttt{true} onto the stack.
 \label{sec:orgdf93d05}
 Format: \texttt{0x09}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{false: boxed (boolean)} ■
+Stack after: \ldots{}, \texttt{false: boxed (boolean)} \(\blacksquare\)
 
 Pushes a boxed boolean \texttt{false} onto the stack.
 
@@ -356,9 +356,9 @@ Pushes a boxed boolean \texttt{false} onto the stack.
 \label{sec:org79cc95f}
 Format: \texttt{0x0A}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{true: boxed (boolean)} ■
+Stack after: \ldots{}, \texttt{true: boxed (boolean)} \(\blacksquare\)
 
 Pushes a boxed boolean \texttt{true} onto the stack.
 
@@ -366,9 +366,9 @@ Pushes a boxed boolean \texttt{true} onto the stack.
 \label{sec:org5d44e29}
 Format: \texttt{0x0B}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{undefined: boxed (undefined)} ■
+Stack after: \ldots{}, \texttt{undefined: boxed (undefined)} \(\blacksquare\)
 
 Pushes a boxed \texttt{undefined} onto the stack.
 
@@ -376,9 +376,9 @@ Pushes a boxed \texttt{undefined} onto the stack.
 \label{sec:org1969f37}
 Format: \texttt{0x0C}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{null: boxed (null)} ■
+Stack after: \ldots{}, \texttt{null: boxed (null)} \(\blacksquare\)
 
 Pushes a boxed \texttt{null} onto the stack.
 
@@ -388,9 +388,9 @@ Format: \texttt{0x0D <address>} (5 bytes)
 
 In the JSON format, the string literal is specified directly instead.
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<string>: boxed (string)} ■
+Stack after: \ldots{}, \texttt{<string>: boxed (string)} \(\blacksquare\)
 
 Pushes the string at the given address onto the stack.
 
@@ -400,9 +400,9 @@ The string at the given address should be null-terminated.
 \label{sec:org5cb332a}
 Format: \texttt{0x0E}
 
-Stack before: \ldots{}​, \texttt{<value>: boxed} ■
+Stack before: \ldots{}, \texttt{<value>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops a boxed value off the stack.
 
@@ -412,9 +412,9 @@ Behaviour is undefined if \texttt{<value>} is not a boxed value.
 \label{sec:org55a65aa}
 Format: \texttt{0x0F}
 
-Stack before: \ldots{}​, \texttt{<value>: boolean} ■
+Stack before: \ldots{}, \texttt{<value>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops a boolean off the stack.
 
@@ -424,9 +424,9 @@ Behaviour is undefined if \texttt{<value>} is not a boolean.
 \label{sec:orgf652769}
 Format: \texttt{0x10}
 
-Stack before: \ldots{}​, \texttt{<value>: number} ■
+Stack before: \ldots{}, \texttt{<value>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops a number off the stack.
 
@@ -436,9 +436,9 @@ Behaviour is undefined if \texttt{<value>} is not a number.
 \label{sec:orgd3666a0}
 Format: \texttt{0x11}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -456,9 +456,9 @@ Otherwise, a fault occurs.
 \label{sec:org117c408}
 Format: \texttt{0x12}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: number} ■
+Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their sum
 \texttt{<c> = <a> + <b>} onto the stack.
@@ -469,9 +469,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org379b868}
 Format: \texttt{0x13}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -486,9 +486,9 @@ Otherwise, a fault occurs.
 \label{sec:org371fd15}
 Format: \texttt{0x14}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: number} ■
+Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their difference
 \texttt{<c> = <a> - <b>} onto the stack.
@@ -499,9 +499,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org742c65a}
 Format: \texttt{0x15}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -516,9 +516,9 @@ Otherwise, a fault occurs.
 \label{sec:org29a8cb0}
 Format: \texttt{0x16}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: number} ■
+Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their product
 \texttt{<c> = <a> * <b>} onto the stack.
@@ -531,9 +531,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org97eb268}
 Format: \texttt{0x17}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -548,9 +548,9 @@ Otherwise, a fault occurs.
 \label{sec:org9ea386e}
 Format: \texttt{0x18}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: number} ■
+Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their quotient
 \texttt{<c> = <a> / <b>} onto the stack.
@@ -561,9 +561,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org6afbbf6}
 Format: \texttt{0x19}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boxed} ■
+Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -577,9 +577,9 @@ Otherwise, a fault occurs.
 \label{sec:orgf4bf035}
 Format: \texttt{0x1A}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: number} ■
+Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> \% <b>} onto
 the stack.
@@ -590,9 +590,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org4404772}
 Format: \texttt{0x1B}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<b>: boxed} ■
+Stack after: \ldots{}, \texttt{<b>: boxed} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack.
 
@@ -604,9 +604,9 @@ Otherwise, a fault occurs.
 \label{sec:org446322c}
 Format: \texttt{0x1C}
 
-Stack before: \ldots{}​, \texttt{<a>: boolean} ■
+Stack before: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<b>: boolean} ■
+Stack after: \ldots{}, \texttt{<b>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack, then pushes its negation \texttt{<b>} onto the stack.
 
@@ -616,9 +616,9 @@ If \texttt{<a>} is not a boolean, behaviour is undefined.
 \label{sec:org5479aa3}
 Format: \texttt{0x1D}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -635,9 +635,9 @@ Otherwise, a fault occurs.
 \label{sec:orga91f7a6}
 Format: \texttt{0x1E}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> < <b>} onto
 the stack.
@@ -648,9 +648,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:orge89bbc6}
 Format: \texttt{0x1F}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -667,9 +667,9 @@ Otherwise, a fault occurs.
 \label{sec:org3ea3931}
 Format: \texttt{0x20}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> > <b>} onto
 the stack.
@@ -680,9 +680,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:orgf9e2550}
 Format: \texttt{0x21}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -699,9 +699,9 @@ Otherwise, a fault occurs.
 \label{sec:orgef83a7a}
 Format: \texttt{0x22}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> <} <b>= onto
 the stack.
@@ -712,9 +712,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org7e275af}
 Format: \texttt{0x23}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -731,9 +731,9 @@ Otherwise, a fault occurs.
 \label{sec:org24757e3}
 Format: \texttt{0x24}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> >} <b>= onto
 the stack.
@@ -744,9 +744,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:orgb222de9}
 Format: \texttt{0x25}
 
-Stack before: \ldots{}​, \texttt{<a>: boxed}, \texttt{<b>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack.
 
@@ -772,9 +772,9 @@ The above cases are exhaustive.
 \label{sec:orge0a190c}
 Format: \texttt{0x26}
 
-Stack before: \ldots{}​, \texttt{<a>: number}, \texttt{<b>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> =} <b>= onto
 the stack.
@@ -785,9 +785,9 @@ If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
 \label{sec:org73ca0ae}
 Format: \texttt{0x27}
 
-Stack before: \ldots{}​, \texttt{<a>: boolean}, \texttt{<b>: boolean} ■
+Stack before: \ldots{}, \texttt{<a>: boolean}, \texttt{<b>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boolean} ■
+Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
 
 Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> =} <b>= onto
 the stack.
@@ -798,9 +798,9 @@ If \texttt{<a>} and \texttt{<b>} are not booleans, behaviour is undefined.
 \label{sec:org1d41a06}
 Format: \texttt{0x28 <address>} (5 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<c>: boxed (function)} ■
+Stack after: \ldots{}, \texttt{<c>: boxed (function)} \(\blacksquare\)
 
 Pushes a new function object \texttt{<c>} onto the stack referring to the
 function at the given address.
@@ -809,9 +809,9 @@ function at the given address.
 \label{sec:orgcc2c694}
 Format: \texttt{0x29}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: boxed (array)} ■
+Stack after: \ldots{}, \texttt{<a>: boxed (array)} \(\blacksquare\)
 
 Pushes a new empty array onto the stack.
 
@@ -819,9 +819,9 @@ Pushes a new empty array onto the stack.
 \label{sec:orgbae78d9}
 Format: \texttt{0x2A <index: u8>} (2 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: boxed} ■
+Stack after: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
 
 Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
 the stack.
@@ -833,9 +833,9 @@ value, behaviour is undefined.
 \label{sec:orgb7a98c2}
 Format: \texttt{0x2B <index: u8>} (2 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: number} ■
+Stack after: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
 
 Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
 the stack.
@@ -847,9 +847,9 @@ number, behaviour is undefined.
 \label{sec:org671ebc7}
 Format: \texttt{0x2C <index: u8>} (2 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: boolean} ■
+Stack after: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
 
 Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
 the stack.
@@ -861,9 +861,9 @@ boolean, behaviour is undefined.
 \label{sec:org466d475}
 Format: \texttt{0x2D <index: u8>} (2 bytes)
 
-Stack before: \ldots{}​, \texttt{<a>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
 environment.
@@ -874,9 +874,9 @@ If \texttt{<a>} is not a boxed value, behaviour is undefined.
 \label{sec:org711619f}
 Format: \texttt{0x2E <index: u8>} (2 bytes)
 
-Stack before: \ldots{}​, \texttt{<a>: boolean} ■
+Stack before: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
 environment.
@@ -887,9 +887,9 @@ If \texttt{<a>} is not a boolean, behaviour is undefined.
 \label{sec:org29b23b4}
 Format: \texttt{0x2F <index: u8>} (2 bytes)
 
-Stack before: \ldots{}​, \texttt{<a>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
 environment.
@@ -900,9 +900,9 @@ If \texttt{<a>} is not a number, behaviour is undefined.
 \label{sec:org445285b}
 Format: \texttt{0x30 <index: u8> <envindex: u8>} (3 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: boxed} ■
+Stack after: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
 
 Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
 current environment onto the stack. If =envindex} is \texttt{0}, this is
@@ -914,9 +914,9 @@ If the value is not a boxed value, behaviour is undefined.
 \label{sec:orgf48099d}
 Format: \texttt{0x31 <index: u8> <envindex: u8>} (3 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: number} ■
+Stack after: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
 
 Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
 current environment onto the stack. If =envindex} is \texttt{0}, this is
@@ -928,9 +928,9 @@ If the value is not a number, behaviour is undefined.
 \label{sec:org74003ff}
 Format: \texttt{0x32 <index: u8> <envindex: u8>} (3 bytes)
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<a>: boolean} ■
+Stack after: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
 
 Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
 current environment onto the stack. If =envindex} is \texttt{0}, this is
@@ -942,9 +942,9 @@ If the value is not a boolean, behaviour is undefined.
 \label{sec:org3861b91}
 Format: \texttt{0x33 <index: u8> <envindex: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a>: boxed} ■
+Stack before: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
 =envindex=th parent of the current environment.
@@ -955,9 +955,9 @@ If \texttt{<a>} is not a boxed value, behaviour is undefined.
 \label{sec:org15feb28}
 Format: \texttt{0x34 <index: u8> <envindex: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a>: boolean} ■
+Stack before: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
 =envindex=th parent of the current environment.
@@ -968,9 +968,9 @@ If \texttt{<a>} is not a boolean, behaviour is undefined.
 \label{sec:org4696eef}
 Format: \texttt{0x35 <index: u8> <envindex: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a>: number} ■
+Stack before: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
 =envindex=th parent of the current environment.
@@ -981,9 +981,9 @@ If \texttt{<a>} is not a number, behaviour is undefined.
 \label{sec:org0b3a1ff}
 Format: \texttt{0x36}
 
-Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number} ■
+Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<value>: boxed} ■
+Stack after: \ldots{}, \texttt{<value>: boxed} \(\blacksquare\)
 
 Pops \texttt{index} and \texttt{array} off the stack.
 
@@ -999,9 +999,9 @@ boxed value.
 \label{sec:orgb1de169}
 Format: \texttt{0x37}
 
-Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number} ■
+Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<value>: boolean} ■
+Stack after: \ldots{}, \texttt{<value>: boolean} \(\blacksquare\)
 
 Pops \texttt{index} and \texttt{array} off the stack.
 
@@ -1017,9 +1017,9 @@ boolean.
 \label{sec:orgdc8e9a7}
 Format: \texttt{0x38}
 
-Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number} ■
+Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<value>: number} ■
+Stack after: \ldots{}, \texttt{<value>: number} \(\blacksquare\)
 
 Pops \texttt{index} and \texttt{array} off the stack.
 
@@ -1035,10 +1035,10 @@ number.
 \label{sec:org4724d89}
 Format: \texttt{0x39}
 
-Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
-\texttt{<value>: boxed} ■
+Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
+\texttt{<value>: boxed} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
 
@@ -1053,10 +1053,10 @@ Behaviour is undefined if \texttt{value} is not a boxed value.
 \label{sec:org8e9e3f6}
 Format: \texttt{0x3A}
 
-Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
-\texttt{<value>: boolean} ■
+Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
+\texttt{<value>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
 
@@ -1071,10 +1071,10 @@ Behaviour is undefined if \texttt{value} is not a boolean.
 \label{sec:org3dfaf54}
 Format: \texttt{0x3B}
 
-Stack before: \ldots{}​, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
-\texttt{<value>: number} ■
+Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
+\texttt{<value>: number} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
 
@@ -1089,9 +1089,9 @@ Behaviour is undefined if \texttt{value} is not a number.
 \label{sec:orge20199f}
 Format: \texttt{0x3C <offset>} (5 bytes)
 
-Stack before: \ldots{}​, \texttt{<condition>: boolean} ■
+Stack before: \ldots{}, \texttt{<condition>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{condition} off the stack.
 
@@ -1108,9 +1108,9 @@ Otherwise, a fault occurs.
 \label{sec:org6c72b12}
 Format: \texttt{0x3D <offset>} (5 bytes)
 
-Stack before: \ldots{}​, \texttt{<condition>: boolean} ■
+Stack before: \ldots{}, \texttt{<condition>: boolean} \(\blacksquare\)
 
-Stack after: \ldots{}​ ■
+Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{condition} off the stack.
 
@@ -1145,10 +1145,10 @@ unchanged.
 \label{sec:orgc60978b}
 Format: \texttt{0x40 <numargs: u8>} (2 bytes)
 
-Stack before: \ldots{}​, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​,
-\texttt{<aN>} ■
+Stack before: \ldots{}, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{},
+\texttt{<aN>} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<r>} ■
+Stack after: \ldots{}, \texttt{<r>} \(\blacksquare\)
 
 Pops the arguments to be passed to the function off the stack in reverse
 order, followed by the function to be called. That is, pop the last
@@ -1172,8 +1172,8 @@ specified in the function header.
 \label{sec:org026b562}
 Format: \texttt{0x41 <numargs: u8>} (2 bytes)
 
-Stack before: \ldots{}​, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​,
-\texttt{<aN>} ■
+Stack before: \ldots{}, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{},
+\texttt{<aN>} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1200,9 +1200,9 @@ specified in the function header.
 \label{sec:org99bb90f}
 Format: \texttt{0x42 <id: u8> <numargs: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<r>} ■
+Stack after: \ldots{}, \texttt{<r>} \(\blacksquare\)
 
 Pops the arguments to be passed to the function off the stack in reverse
 order. That is, pop the last argument, followed by the second last, and
@@ -1221,7 +1221,7 @@ compared to the specified types.
 \label{sec:orgd22c74d}
 Format: \texttt{0x43 <id: u8> <numargs: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1243,9 +1243,9 @@ compared to the specified types.
 \label{sec:org008ae6e}
 Format: \texttt{0x44 <id: u8> <numargs: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
 
-Stack after: \ldots{}​, \texttt{<r>} ■
+Stack after: \ldots{}, \texttt{<r>} \(\blacksquare\)
 
 Pops the arguments to be passed to the function off the stack in reverse
 order. That is, pop the last argument, followed by the second last, and
@@ -1263,7 +1263,7 @@ compared to the specified types.
 \label{sec:org22cfce9}
 Format: \texttt{0x45 <id: u8> <numargs: u8>} (3 bytes)
 
-Stack before: \ldots{}​, \texttt{<a1>}, \texttt{<a2>}, \ldots{}​, \texttt{<aN>} ■
+Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1284,7 +1284,7 @@ compared to the specified types.
 \label{sec:org5c86ae1}
 Format: \texttt{0x46}
 
-Stack before: \ldots{}​, \texttt{<retval>: boxed} ■
+Stack before: \ldots{}, \texttt{<retval>: boxed} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1301,7 +1301,7 @@ Behaviour is undefined if \texttt{retval} is not a boxed value.
 \label{sec:org24d7891}
 Format: \texttt{0x47}
 
-Stack before: \ldots{}​, \texttt{<retval>: number} ■
+Stack before: \ldots{}, \texttt{<retval>: number} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1318,7 +1318,7 @@ Behaviour is undefined if \texttt{retval} is not a number.
 \label{sec:org489d37c}
 Format: \texttt{0x48}
 
-Stack before: \ldots{}​, \texttt{<retval>: boolean} ■
+Stack before: \ldots{}, \texttt{<retval>: boolean} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1335,7 +1335,7 @@ Behaviour is undefined if \texttt{retval} is not a boolean.
 \label{sec:org4462eb4}
 Format: \texttt{0x49}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1349,7 +1349,7 @@ type of the return value is not undefined.
 \label{sec:org02d0940}
 Format: \texttt{0x4A}
 
-Stack before: \ldots{}​ ■
+Stack before: \ldots{} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1363,9 +1363,9 @@ type of the return value is not undefined.
 \label{sec:orgde7ff7a}
 Format: \texttt{0x4B}
 
-Stack before: \ldots{}​ \texttt{<value>} ■
+Stack before: \ldots{} \texttt{<value>} \(\blacksquare\)
 
-Stack after: \ldots{}​ \texttt{<value>}, \texttt{<value>} ■
+Stack after: \ldots{} \texttt{<value>}, \texttt{<value>} \(\blacksquare\)
 
 Pushes a copy of the topmost value on the stack onto the stack.
 
