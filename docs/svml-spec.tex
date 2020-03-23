@@ -1,19 +1,6 @@
-% Created 2020-03-23 Mon 14:12
+% Created 2020-03-23 Mon 19:44
 % Intended LaTeX compiler: pdflatex
-\documentclass[11pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{grffile}
-\usepackage{longtable}
-\usepackage{wrapfig}
-\usepackage{rotating}
-\usepackage[normalem]{ulem}
-\usepackage{amsmath}
-\usepackage{textcomp}
-\usepackage{amssymb}
-\usepackage{capt-of}
-\usepackage{hyperref}
+\input source_header.tex
 \author{koo}
 \date{\today}
 \title{}
@@ -24,7 +11,29 @@
  pdfsubject={},
  pdfcreator={Emacs 26.3 (Org mode 9.2.6)},
  pdflang={English}}
+
+\renewcommand{\docheader}[3]{%
+
+  \thispagestyle{empty}
+
+\markright{SICP, JavaScript Adaptation, #2 #3, #1}
+\begin{center}
+  {\Large {\bf Specification of #2 #3}---#1 edition}\\[10mm]
+
+  {\large Tee Hao Wei}\\[5mm]
+
+  {\large National University of Singapore \\
+          School of Computing}\\[10mm]
+
+  {\large \today}\\[10mm]
+\end{center}
+}
 \begin{document}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\docheader{2021}{Source VM Instruction Set}{}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input source_intro.tex
 
 \tableofcontents
 
