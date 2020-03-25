@@ -16,6 +16,7 @@
 #+LATEX_HEADER: \newcommand{\translateaux}{\hookrightarrow}
 #+LATEX_HEADER: \usepackage[strings]{underscore}
 #+LATEX_HEADER: \usepackage[title]{appendix}
+#+REVEAL_THEME: night
 
 #+TITLE: Concurrent Virtual Machine
 #+AUTHOR: Jon and Koo
