@@ -17,8 +17,10 @@
 #+LATEX_HEADER: \usepackage[strings]{underscore}
 #+LATEX_HEADER: \usepackage[title]{appendix}
 #+REVEAL_THEME: night
+#+REVEAL_TITLE_SLIDE: <section id="sec-title-slide"><h1 class="title">%t</h1><p class="subtitle">%s</p><h2 class="author">%a</h2></section>
 
-#+TITLE: Concurrent Virtual Machine
+#+TITLE: Concurrent VM
+#+SUBTITLE: [[https://github.com/source-academy/js-slang/pull/456][js-slang/pull/456]]
 #+AUTHOR: Jon and Koo
 
 * Introducing Concurrency to Source
