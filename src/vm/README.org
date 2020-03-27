@@ -59,7 +59,11 @@ In this specification, we describe the behavior of compiling from Source to SVML
 * =EXECUTE= Rules
 
 ** Compiling
-$$\Rule{E_1 \translateaux s_1 \qquad \cdots \qquad E_n \translateaux s_n}{\texttt{concurrent_execute}(E_1, \cdots , E_n) \translateaux s_1. \cdots .s_n.\texttt{CALLV id n}}$$
+$$\Rule{E_1 \translateaux s_1 \qquad \cdots \qquad E_n \translateaux s_n}{
+\begin{aligned}
+&\texttt{concurrent_execute}(E_1, \cdots , E_n)\\
+\translateaux &s_1. \cdots .s_n.\texttt{CALLV id n}
+\end{aligned}}$$
 Each of $s_1. \cdots .s_n$ is a sequence of VM instructions that loads a closure onto the operand stack, and $id$ is the opcode of =EXECUTE=.
 
 ** Running
@@ -118,14 +122,22 @@ To cover all cases, here is the rule for empty thread queue:
 $$\Rule{}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \langle \rangle, 0) \transition (\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \langle \rangle, c)}$$
 
 **** Running thread
-$$\Rule{s(\textit{pc}) \neq \texttt{RET} \qquad \textit{to} > 0}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}) \transition (\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)}$$
+$$\Rule{s(\textit{pc}) \neq \texttt{RET} \qquad \textit{to} > 0}{
+\begin{aligned}
+&(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
+\transition &(\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)
+\end{aligned}}$$
 #+BEGIN_NOTES
 where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements.
 #+END_NOTES
 where the primed values are just like normal VM code execution.
 
 **** Running thread, returning from function
-$$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} \neq \langle \rangle}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}) \transition (\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)}$$
+$$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} \neq \langle \rangle}{
+\begin{aligned}
+&(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
+\transition &(\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)
+\end{aligned}}$$
 #+BEGIN_NOTES
 where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements. Note: the thread may execute the =RET= statement inside a function, and the thread does the normal thing of popping $\textit{rs}$ and so on.
 #+END_NOTES
@@ -135,7 +147,8 @@ The thread may execute the =RET= statement inside a function, and the thread doe
 $$\Rule{s(\textit{pc}) = \texttt{EXECUTE n} \qquad \textit{to} > 0}{
 \begin{aligned}
 &((\textit{pc}_1, \textit{e}_1). \cdots .(\textit{pc}_n, \textit{e}_n).\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
-\transition &(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}.(\langle \rangle, \textit{pc}_1, \textit{e}_1, \langle \rangle). \cdots .(\langle \rangle, \textit{pc}_n, \textit{e}_n, \langle \rangle), \textit{to}-1)
+\transition &(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}.(\langle \rangle, \textit{pc}_1, \textit{e}_1, \langle \rangle).\\
+&\cdots .(\langle \rangle, \textit{pc}_n, \textit{e}_n, \langle \rangle), \textit{to}-1)
 \end{aligned}}$$
 #+BEGIN_NOTES
 Closures representing threads $t_i$ (two-tuples of $\textit{pc}_i$ and $\textit{e}_i$) on the operand stack are converted into threads $t_i$. Thread $t_i$ is a four-tuple of each thread $t_i$'s own $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$. Initially, thread $t_i$ has empty $\textit{os}_i$ and empty $\textit{rs}_i$.
@@ -145,7 +158,11 @@ Note: we decrement timeout instead of setting a random timeout, since setting a 
 Thread $t_i$ is a four-tuple of $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$.
 
 **** Returning from thread
-$$\Rule{s(\textit{pc}_1) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs}_1 = \langle \rangle}{(\textit{os}_1, \textit{pc}_1, \textit{e}_1, \textit{rs}_1, (\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2).\textit{tq}, \textit{to}) \transition (\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2, \textit{tq}, c)}$$
+$$\Rule{s(\textit{pc}_1) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs}_1 = \langle \rangle}{
+\begin{aligned}
+&(\textit{os}_1, \textit{pc}_1, \textit{e}_1, \textit{rs}_1, (\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2).\textit{tq}, \textit{to})\\
+\transition &(\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2, \textit{tq}, c)
+\end{aligned}}$$
 #+BEGIN_NOTES
 If a thread executes the =RET= statement, and the runtime stack is empty, then the thread is not enqueued on the thread queue, and the next thread is dequeued from the thread queue, with a random timeout value $c$.
 
@@ -154,7 +171,11 @@ The above rule assumes there is least one thread in the thread queue. To cover a
 To cover all cases, here is the rule for empty thread queue in the next subsection:
 
 **** Ending our VM
-$$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} = \langle \rangle \qquad \textit{tq} = \langle \rangle}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}) \transition (\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}-1)}$$
+$$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} = \langle \rangle \qquad \textit{tq} = \langle \rangle}{
+\begin{aligned}
+&(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
+\transition &(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}-1)
+\end{aligned}}$$
 #+BEGIN_NOTES
 If a thread executes the =RET= statement, and both the runtime stack and the thread queue are empty, and the timeout is nonzero, then the timeout decrements, and our VM stops.
 #+END_NOTES
