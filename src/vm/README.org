@@ -25,6 +25,7 @@
 #+AUTHOR: Jon and Koo
 
 * Introducing Concurrency to Source
+#+BEGIN_NOTES
 This concurrent system consists of concurrently executing (potentially multiple) code in multiple threads. Communication between threads is achieved by updating the values of memory shared between threads. Each thread is a collection of registers $\textit{os}, \textit{pc}, \textit{e}, \textit{rs}$, and at the expiration of the time quantum, the concurrent system executes the next thread in the thread queue.
 
 To comply with the textbook, the thread that calls =concurrent_execute= also continues to execute the rest of its code concurrently with the threads. Furthermore, there is no =join= primitive concurrent function.
@@ -34,12 +35,23 @@ The level of concurrency of our system is at the instruction level. This means a
 Compared to Source $\S 3$, this concurrent system has the following changes:
 - The addition of three primitive concurrent functions.
 For details, see Section ``Concurrency Support'' below.
+#+END_NOTES
+- Multiple concurrent threads
+- Shared memory communication
+- Each thread is registers $\textit{os}, \textit{pc}, \textit{e}, \textit{rs}$
+- Thread that calls =concurrent_execute= also continues to execute concurrently
+- All instructions are atomic
 
 * Concurrency Support
+#+BEGIN_NOTES
 The following concurrent functions are supported:
 - $\texttt{concurrent_execute(}\texttt{f}_\texttt{1}, \cdots \texttt{f}_\texttt{n}\texttt{)}$: $\textit{primitive}$, setup multiple threads for concurrent execution. For each nullary function $\texttt{f}_\texttt{i}$ that returns =undefined=, setup a thread $\texttt{t}_\texttt{i}$ that executes the code in the body of $\texttt{f}_\texttt{i}$. The thread that called =concurrent_execute= also executes concurrently with all $\texttt{t}_\texttt{i}$. Returns =undefined=. This is an atomic operation.
 - =test_and_set(a)=: $\textit{primitive}$, assumes the head of array =a= is a boolean $b$. Sets the head of =a= to =true=. Returns $b$. This is an atomic operation.
 - =clear(a)=: $\textit{primitive}$, sets the head of array =a= to =false=. Returns =undefined=. This is an atomic operation.
+#+END_NOTES
+- $\texttt{concurrent_execute(}\texttt{f}_\texttt{1}, \cdots \texttt{f}_\texttt{n}\texttt{)}$
+- =test_and_set(a)=
+- =clear(a)=
 
 * COMMENT Under the hood: a Virtual Machine (VM) for Concurrent Source
 In this specification, we describe the behavior of compiling from Source to SVML, as well as running SVML, with natural deduction rules. Please refer to [[Explanations on Inference Rules][Appendix A]] for explanations about compilation rules and VM transition rules.
@@ -51,6 +63,7 @@ $$\Rule{E_1 \translateaux s_1 \qquad \cdots \qquad E_n \translateaux s_n}{\textt
 Each of $s_1. \cdots .s_n$ is a sequence of VM instructions that loads a closure onto the operand stack, and $id$ is the opcode of =EXECUTE=.
 
 ** Running
+#+BEGIN_NOTES
 The state representing a normal VM has these structures:
 $$(\textit{os}, \textit{pc}, \textit{e}, \textit{rs})$$
 There are additional structures in our VM:
@@ -60,74 +73,117 @@ The state representing our VM will have two more corresponding structures:
 $$(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})$$
 The initial state of our VM is a $\textit{pc}$ set to zero, and has empty $\textit{os}$, $\textit{env}$, $\textit{rs}$, and $\textit{tq}$, and zero timeout:
 $$(\langle \rangle, 0, \langle \rangle, \langle \rangle, \langle \rangle, 0)$$
+#+END_NOTES
+Additional structures:
+0. $\textit{tq}$
+0. $\textit{to}$
+State:
+$$(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})$$
+Initial state:
+$$(\langle \rangle, 0, \langle \rangle, \langle \rangle, \langle \rangle, 0)$$
 
-Some notes on program execution:
+*** Program Execution
+#+BEGIN_NOTES
 0. When the program calls =concurrent_execute=, it executes the rest of its code along with the concurrent threads, therefore the sequential program becomes a concurrent thread.
 0. Consider the case when a program does not use any primitive concurrent functions. To avoid distinguishing between the case when the program is sequential and the program is concurrent, therefore simplifying the rules, the sequential program must still execute like a concurrent thread. This means sequential execution may time out, and may be pushed and popped from the thread queue. However, implementations of the VM may, as an optimization, avoid pushing and popping while executing sequential code.
 0. As a result, all programs here are concurrent programs, even if they do not call =concurrent_execute=.
 0. None of the programs here return a result, because concurrent programs should not return a result, since concurrent threads return nothing.
+#+END_NOTES
+- All programs are concurrent :: After =concurrent_execute=, execution continues along with the concurrent threads.
+- Even without calling =concurrent_execute= :: Sequential execution may time out, and may be pushed and popped from the thread queue.
+- No programs return a result :: Since concurrent threads return nothing.
 
-Design choices:
+*** Design Choices
+#+BEGIN_NOTES
 0. Threads are scheduled in a round-robin manner, where the order of threads in the circular queue is respected, and all threads are scheduled some time to execute (this scheduled time is also known as the timeout of a thread), so resource starvation is impossible.
 0. We modify the round-robin scheduler, by allocating a random timeout to each thread, so that different runs of the same program are more likely to execute differently, for a more interesting experience. This preserves the impossibility of resource starvation.
+#+END_NOTES
+- Round-robin scheduling :: Resource starvation is impossible.
+- Random timeouts ::  Allocating random time quanta preserves the impossibility of starvation.
 
-*** Thread timeout
+*** =EXECUTE= Rules
+
+**** Thread timeout
 $$\Rule{}{
 \begin{aligned}
 &(\textit{os}_1, \textit{pc}_1, \textit{e}_1, \textit{rs}_1, (\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2).\textit{tq}, 0)\\
 \transition &(\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2, \textit{tq}.(\textit{os}_1, \textit{pc}_1, \textit{e}_1, \textit{rs}_1), c)
 \end{aligned}}$$
+#+BEGIN_NOTES
 If a thread times out and has not finished execution (has not executed the =RET= statement), then it is enqueued on the thread queue, and the next thread is dequeued from the thread queue, with a random timeout value $c$.
 
 The above rule assumes there is least one thread in the thread queue. To cover all cases, here is the rule for zero threads in the thread queue:
+#+END_NOTES
+To cover all cases, here is the rule for empty thread queue:
 $$\Rule{}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \langle \rangle, 0) \transition (\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \langle \rangle, c)}$$
 
-*** Running thread
+**** Running thread
 $$\Rule{s(\textit{pc}) \neq \texttt{RET} \qquad \textit{to} > 0}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}) \transition (\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)}$$
+#+BEGIN_NOTES
 where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements.
+#+END_NOTES
+where the primed values are just like normal VM code execution.
 
-*** Running thread, returning from function
+**** Running thread, returning from function
 $$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} \neq \langle \rangle}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}) \transition (\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)}$$
+#+BEGIN_NOTES
 where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements. Note: the thread may execute the =RET= statement inside a function, and the thread does the normal thing of popping $\textit{rs}$ and so on.
+#+END_NOTES
+The thread may execute the =RET= statement inside a function, and the thread does the normal thing of popping $\textit{rs}$ and so on.
 
-*** Starting =EXECUTE=
+**** Starting =EXECUTE=
 $$\Rule{s(\textit{pc}) = \texttt{EXECUTE n} \qquad \textit{to} > 0}{
 \begin{aligned}
 &((\textit{pc}_1, \textit{e}_1). \cdots .(\textit{pc}_n, \textit{e}_n).\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
 \transition &(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}.(\langle \rangle, \textit{pc}_1, \textit{e}_1, \langle \rangle). \cdots .(\langle \rangle, \textit{pc}_n, \textit{e}_n, \langle \rangle), \textit{to}-1)
 \end{aligned}}$$
+#+BEGIN_NOTES
 Closures representing threads $t_i$ (two-tuples of $\textit{pc}_i$ and $\textit{e}_i$) on the operand stack are converted into threads $t_i$. Thread $t_i$ is a four-tuple of each thread $t_i$'s own $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$. Initially, thread $t_i$ has empty $\textit{os}_i$ and empty $\textit{rs}_i$.
 The thread that calls =concurrent_execute= also continues to execute concurrently with the other threads. This is shown by the $\textit{os}, \textit{pc}, \textit{e}, \textit{rs}$ being in the machine state after the transition arrow, and shown by the timeout decrementing.
 Note: we decrement timeout instead of setting a random timeout, since setting a random timeout makes starvation possible: the thread that only calls =concurrent_execute=, and calls =concurrent_execute= infinitely many times, will always be run.
+#+END_NOTES
+Thread $t_i$ is a four-tuple of $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$.
 
-*** Returning from thread
+**** Returning from thread
 $$\Rule{s(\textit{pc}_1) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs}_1 = \langle \rangle}{(\textit{os}_1, \textit{pc}_1, \textit{e}_1, \textit{rs}_1, (\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2).\textit{tq}, \textit{to}) \transition (\textit{os}_2, \textit{pc}_2, \textit{e}_2, \textit{rs}_2, \textit{tq}, c)}$$
+#+BEGIN_NOTES
 If a thread executes the =RET= statement, and the runtime stack is empty, then the thread is not enqueued on the thread queue, and the next thread is dequeued from the thread queue, with a random timeout value $c$.
 
 The above rule assumes there is least one thread in the thread queue. To cover all cases, the rule for zero threads in the thread queue is in the next subsection:
+#+END_NOTES
+To cover all cases, here is the rule for empty thread queue in the next subsection:
 
-*** Ending our VM
+**** Ending our VM
 $$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} = \langle \rangle \qquad \textit{tq} = \langle \rangle}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}) \transition (\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to}-1)}$$
+#+BEGIN_NOTES
 If a thread executes the =RET= statement, and both the runtime stack and the thread queue are empty, and the timeout is nonzero, then the timeout decrements, and our VM stops.
+#+END_NOTES
+The timeout decrements, and our VM stops.
 
 * =TEST_AND_SET= and =CLEAR= Rules
 
 ** Compiling
+
+*** =TEST_AND_SET=
 $$\Rule{E \translateaux s}{\texttt{test_and_set}(E) \translateaux s.\texttt{CALLV id 1}}$$
 where $E$ is an array, whose head is a boolean, and $id$ is the opcode of =TEST_AND_SET=.
 
+*** =CLEAR=
 $$\Rule{E \translateaux s}{\texttt{clear}(E) \translateaux s.\texttt{CALLV id 1}}$$
 where $E$ is an array, and $id$ is the opcode of =CLEAR=.
 
 ** Running
+
+*** =TEST_AND_SET=
 $$\Rule{s(\textit{pc}) = \texttt{TEST_AND_SET}}{(a.\textit{os},\textit{pc}) \transition (b.\textit{os},\textit{pc} + 1)}$$
 where $a$ is the address of an array stored on the heap. The head of this array is initially $b$, where $b$ is a boolean. After this rule executes, the head of this array is set to $\textit{true}$.
 
+*** =CLEAR=
 $$\Rule{s(\textit{pc}) = \texttt{CLEAR}}{(a.\textit{os},\textit{pc}) \transition (\textit{os},\textit{pc} + 1)}$$
 where $a$ is the address of an array stored on the heap. The head of this array is updated to $\textit{false}$.
 
 #+LATEX: \begin{appendices}
-* Explanations on Inference Rules
+* COMMENT Explanations on Inference Rules
 
 ** Inference Line
 The horizontal inference line plays the role of $\texttt{if } \ldots \texttt{then } \ldots$ in our earlier presentations of the rules. In general, in an inductive definition of a set $X$, an inference rule of the form
