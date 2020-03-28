@@ -1,15 +1,24 @@
-% Created 2020-03-23 Mon 19:44
-% Intended LaTeX compiler: pdflatex
+% This file was converted from the original MediaWiki file in the js-slang wiki
+% using the following command line:
+% cat SVML-Instruction-Set.wiki | sed \
+%   -e 's/<code>/__STARTCODE__/g' -e 's#</code>#__ENDCODE__#g' \
+%   -e 's/<pre>/__STARTPRE__/g' -e 's#</pre>#__ENDPRE__#g' \
+%   -e 's#</\?p>##g' \
+%   -e 's#■#\\(\\blacksquare\\)#g' \
+%   -e 's#<#\&lt;#g' -e 's#>#\&gt;#g' \
+%   -e 's/__STARTCODE__/<code>/g' -e 's#__ENDCODE__#</code>#g' \
+%   -e 's/__STARTPRE__/<pre>/g' -e 's#__ENDPRE__#</pre>#g' | \
+%   pandoc --shift-heading-level-by=-1 --no-highlight -f mediawiki-auto_identifiers -t latex | \
+%   sed -z -e 's/\\tightlist\n//g' -e 's#\\_\\_TOC\\_\\_\n\n##g'
+% The following adjustments were done to the resulting TeX:
+% - Change the primitive listing itemize to a tightlist
+
 \input source_header.tex
 \author{koo}
 \date{\today}
 \title{}
 \hypersetup{
  pdfauthor={koo},
- pdftitle={},
- pdfkeywords={},
- pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.2.6)},
  pdflang={English}}
 
 \renewcommand{\docheader}[3]{%
@@ -30,222 +39,87 @@
 }
 \begin{document}
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\docheader{2021}{Source VM Instruction Set}{}
+	\docheader{2021}{Source}{VM Instruction Set}
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input source_intro.tex
 
 \tableofcontents
 
-\label{orgabf1b1f}
+\section{Source VM instruction set}
 
-\label{org91c3f94}
+\subsection{Faults}
 
-\section{Source VM Instruction Set}
-\label{sec:orgdf5f0e0}
-\label{orga35b075}
-
-\label{orgaf84f79}
-Table of Contents
-
-\begin{itemize}
-\item \hyperref[sec:orgdf5f0e0]{Source VM Instruction Set}
-
-\begin{itemize}
-\item \hyperref[sec:orgd013882]{General faults}
-\item \hyperref[sec:org6c2c333]{Mnemonic conventions}
-\item \hyperref[sec:org6af44d0]{Instruction entry format}
-
-\begin{itemize}
-\item \hyperref[sec:org91c15ea]{\texttt{mnemonic}: instruction name}
-\end{itemize}
-
-\item \hyperref[sec:org33d7595]{Instructions}
-
-\begin{itemize}
-\item \hyperref[sec:orgbc7ec8d]{\texttt{nop}: no-op}
-\item \hyperref[sec:orgc756866]{\texttt{ldc.i}: load constant integer}
-\item \hyperref[sec:org5cf9345]{\texttt{lgc.i}: load boxed
-constant integer}
-\item \hyperref[sec:orgd3689f6]{\texttt{ldc.f32}: load
-constant number (single-precision)}
-\item \hyperref[sec:orgee247e4]{\texttt{lgc.f32}:
-load boxed constant number (single-precision)}
-\item \hyperref[sec:org6bba761]{\texttt{ldc.f64}: load
-constant number (double-precision)}
-\item \hyperref[sec:orgae88789]{\texttt{lgc.f64}:
-load boxed constant number (double-precision)}
-\item \hyperref[sec:org628c82c]{\texttt{ldc.b.0}: load constant false}
-\item \hyperref[sec:org45a4edf]{\texttt{ldc.b.1}: load constant true}
-\item \hyperref[sec:orgdf93d05]{\texttt{lgc.b.0}: load boxed
-constant false}
-\item \hyperref[sec:org79cc95f]{\texttt{lgc.b.1}: load boxed
-constant true}
-\item \hyperref[sec:org5d44e29]{\texttt{lgc.u}: load boxed
-constant undefined}
-\item \hyperref[sec:org1969f37]{\texttt{lgc.n}: load boxed constant
-null}
-\item \hyperref[sec:org2f69311]{\texttt{lgc.s}: load constant string}
-\item \hyperref[sec:org5cb332a]{\texttt{pop.g}: pop boxed value
-from stack}
-\item \hyperref[sec:org55a65aa]{\texttt{pop.b}: pop boolean from
-stack}
-\item \hyperref[sec:orgf652769]{\texttt{pop.f}: pop number from stack}
-\item \hyperref[sec:orgd3666a0]{\texttt{add.g}: add boxed values}
-\item \hyperref[sec:org117c408]{\texttt{add.f}: add numbers}
-\item \hyperref[sec:org379b868]{\texttt{sub.g}: subtract boxed values}
-\item \hyperref[sec:org371fd15]{\texttt{sub.f}: subtract numbers}
-\item \hyperref[sec:org742c65a]{\texttt{mul.g}: multiply boxed values}
-\item \hyperref[sec:org29a8cb0]{\texttt{mul.f}: multiply numbers}
-\item \hyperref[sec:org97eb268]{\texttt{div.g}: divide boxed values}
-\item \hyperref[sec:org9ea386e]{\texttt{div.f}: divide numbers}
-\item \hyperref[sec:org6afbbf6]{\texttt{mod.g}: modulo boxed values}
-\item \hyperref[sec:orgf4bf035]{\texttt{mod.f}: modulo numbers}
-\item \hyperref[sec:org4404772]{\texttt{not.g}: negate boxed value}
-\item \hyperref[sec:org446322c]{\texttt{not.b}: negate boolean}
-\item \hyperref[sec:org5479aa3]{\texttt{lt.g}: less than, boxed
-operands}
-\item \hyperref[sec:orga91f7a6]{\texttt{lt.f}: less than, number
-operands}
-\item \hyperref[sec:orge89bbc6]{\texttt{gt.g}: greater than, boxed
-operands}
-\item \hyperref[sec:org3ea3931]{\texttt{gt.f}: greater than,
-number operands}
-\item \hyperref[sec:orgf9e2550]{\texttt{le.g}: less than
-or equal to, boxed operands}
-\item \hyperref[sec:orgef83a7a]{\texttt{le.f}: less than
-or equal to, number operands}
-\item \hyperref[sec:org7e275af]{\texttt{ge.g}: greater
-than or equal to, boxed operands}
-\item \hyperref[sec:org24757e3]{\texttt{ge.f}: greater
-than or equal to, number operands}
-\item \hyperref[sec:orgb222de9]{\texttt{eq.g}: equal, boxed operands}
-\item \hyperref[sec:orge0a190c]{\texttt{eq.f}: equal, number operands}
-\item \hyperref[sec:org73ca0ae]{\texttt{eq.b}: equal, boolean operands}
-\item \hyperref[sec:org1d41a06]{\texttt{new.c}: create function}
-\item \hyperref[sec:orgcc2c694]{\texttt{new.a}: create array}
-\item \hyperref[sec:orgbae78d9]{\texttt{ldl.g}: load
-boxed value from current environment}
-\item \hyperref[sec:orgb7a98c2]{\texttt{ldl.f}: load
-number from current environment}
-\item \hyperref[sec:org671ebc7]{\texttt{ldl.b}: load
-boolean from current environment}
-\item \hyperref[sec:org466d475]{\texttt{stl.g}:
-store boxed value into current environment}
-\item \hyperref[sec:org711619f]{\texttt{stl.b}: store
-boolean into current environment}
-\item \hyperref[sec:org29b23b4]{\texttt{stl.f}: store
-number into current environment}
-\item \hyperref[sec:org445285b]{\texttt{ldp.g}: load
-boxed value from (parent) environment}
-\item \hyperref[sec:orgf48099d]{\texttt{ldp.f}: load
-number from (parent) environment}
-\item \hyperref[sec:org74003ff]{\texttt{ldp.b}: load
-boolean from (parent) environment}
-\item \hyperref[sec:org3861b91]{\texttt{stp.g}:
-store boxed value into (parent) environment}
-\item \hyperref[sec:org15feb28]{\texttt{stp.b}: store
-boolean into (parent) environment}
-\item \hyperref[sec:org4696eef]{\texttt{stp.f}: store
-number into (parent) environment}
-\item \hyperref[sec:org0b3a1ff]{\texttt{lda.g}: load boxed value
-from array}
-\item \hyperref[sec:orgb1de169]{\texttt{lda.b}: load boolean from
-array}
-\item \hyperref[sec:orgdc8e9a7]{\texttt{lda.f}: load number from
-array}
-\item \hyperref[sec:org4724d89]{\texttt{sta.g}: store boxed value
-into array}
-\item \hyperref[sec:org8e9e3f6]{\texttt{sta.b}: store boolean into
-array}
-\item \hyperref[sec:org3dfaf54]{\texttt{sta.f}: store number into
-array}
-\item \hyperref[sec:orge20199f]{\texttt{br.t}: branch if true}
-\item \hyperref[sec:org6c72b12]{\texttt{br.f}: branch if false}
-\item \hyperref[sec:org71bb9a3]{\texttt{br}: branch}
-\item \hyperref[sec:orgeb956da]{\texttt{jmp}: jump}
-\item \hyperref[sec:orgc60978b]{\texttt{call}: call function}
-\item \hyperref[sec:org026b562]{\texttt{call.t}: tail call function}
-\item \hyperref[sec:org99bb90f]{\texttt{call.p}: call primitive
-function}
-\item \hyperref[sec:orgd22c74d]{\texttt{call.t.p}: tail call
-primitive function}
-\item \hyperref[sec:org008ae6e]{\texttt{call.v}:
-call VM-internal function/native function}
-\item \hyperref[sec:org22cfce9]{\texttt{call.t.v}:
-tail call VM-internal function/native function}
-\item \hyperref[sec:org5c86ae1]{\texttt{ret.g}: return boxed value}
-\item \hyperref[sec:org24d7891]{\texttt{ret.f}: return number}
-\item \hyperref[sec:org489d37c]{\texttt{ret.b}: return boolean}
-\item \hyperref[sec:org4462eb4]{\texttt{ret.u}: return undefined}
-\item \hyperref[sec:org02d0940]{\texttt{ret.n}: return null}
-\item \hyperref[sec:orgde7ff7a]{\texttt{dup}: duplicate top of stack}
-\item \hyperref[sec:orgb7d0128]{\texttt{newenv}: create new
-environment}
-\item \hyperref[sec:org4cc850b]{\texttt{popenv}: pop environment}
-\end{itemize}
-
-\item \hyperref[sec:org22a9c67]{Primitive functions}
-\item \hyperref[sec:org5fffbe9]{Machine-parseable instruction
-set}
-\end{itemize}
-\end{itemize}
-
-\subsection{General faults}
-\label{sec:orgd013882}
 Faults specific to particular instructions are documented in the entries
-below.
-
-Aside from those, the following faults can occur; these are presented
-here as they apply to multiple instructions.
+below. In general, such faults are due to:
 
 \begin{itemize}
-\item Pushing onto a full stack
+\item
+  type errors, for instructions that operate on boxed values
+\item
+  invalid array indexes (negative or non-integral)
+\item
+  incorrect function arity
+\end{itemize}
 
-\item Popping from an empty stack
+Aside from those, the following faults can be raised by any instruction;
+however, these faults are indicative of bugs in the compiler. A correct
+compiler should not produce programs that result in the following
+faults.
 
-\item Loading from or storing into an invalid index in an environment
-
-\item Running out of memory
+\begin{itemize}
+\item
+  Pushing onto a full stack
+\item
+  Popping from an empty stack
+\item
+  Loading from or storing into an invalid index in an environment
+\item
+  Running out of memory
 \end{itemize}
 
 \subsection{Mnemonic conventions}
-\label{sec:org6c2c333}
+
 For instructions that operate on values, the type of the operand(s) is
 represented in the instruction mnemonic by a letter:
 
 \begin{itemize}
-\item \texttt{u} undefined
-
-\item \texttt{n} null
-
-\item \texttt{b} boolean
-
-\item \texttt{i} integer
-
-\item \texttt{f} number (float)
-
-\item \texttt{s} string
-
-\item \texttt{a} array
-
-\item \texttt{c} function
-
-\item \texttt{g} boxed value
+\item
+  \texttt{u} undefined
+\item
+  \texttt{n} null
+\item
+  \texttt{b} boolean
+\item
+  \texttt{i} integer
+\item
+  \texttt{f} number (float)
+\item
+  \texttt{s} string
+\item
+  \texttt{a} array
+\item
+  \texttt{c} function
+\item
+  \texttt{g} boxed value
 \end{itemize}
 
 \subsection{Instruction entry format}
-\label{sec:org6af44d0}
-\subsubsection{\texttt{mnemonic}: instruction name}
-\label{sec:org91c15ea}
-Format: \texttt{opcode <argument1: type> <argument2: type>} (N bytes)
+
+\subsubsection{\texorpdfstring{\texttt{mnemonic}: instruction
+name}{mnemonic: instruction name}}
+
+Format:
+\texttt{opcode\ \textless{}argument1:\ type\textgreater{}\ \textless{}argument2:\ type\textgreater{}}
+(N bytes)
 
 The binary format byte count is omitted for instructions with no
 arguments. They are 1 byte long.
 
-Stack before: \ldots{}, \texttt{value1: type}, \texttt{value2: type} \(\blacksquare\)
+Stack before: \ldots, \texttt{value1:\ type}, \texttt{value2:\ type}
+\(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{value3: type} \(\blacksquare\)
+Stack after: \ldots, \texttt{value3:\ type} \(\blacksquare\)
 
 \(\blacksquare\) represents the top of the stack.
 
@@ -253,850 +127,1290 @@ The rest of the entry details what the opcode does, and any possible
 faults.
 
 \subsection{Instructions}
-\label{sec:org33d7595}
-\subsubsection{\texttt{nop}: no-op}
-\label{sec:orgbc7ec8d}
+
+\subsubsection{\texorpdfstring{\texttt{nop}: no-op}{nop: no-op}}
+
 Format: \texttt{0x00}
 
 Does not modify the stack.
 
 Does nothing.
 
-\subsubsection{\texttt{ldc.i}: load constant integer}
-\label{sec:orgc756866}
-Format: \texttt{0x01 <value: i32>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldc.i}: load constant
+integer}{ldc.i: load constant integer}}
+
+Format: \texttt{0x01\ \textless{}value:\ i32\textgreater{}} (5 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<value>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}value\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pushes an integer with value equal to \texttt{<value>} onto the stack.
+Pushes an integer with value equal to
+\texttt{\textless{}value\textgreater{}} onto the stack.
 
-\subsubsection{\texttt{lgc.i}: load boxed constant integer}
-\label{sec:org5cf9345}
-Format: \texttt{0x02 <value: i32>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{lgc.i}: load boxed constant
+integer}{lgc.i: load boxed constant integer}}
 
-Stack before: \ldots{} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<value>: boxed (number)} \(\blacksquare\)
-
-Pushes a boxed integer with value equal to \texttt{<value>} onto the stack.
-
-\subsubsection{\texttt{ldc.f32}: load constant number (single-precision)}
-\label{sec:orgd3689f6}
-Format: \texttt{0x03 <number: f32>} (5 bytes)
+Format: \texttt{0x02\ \textless{}value:\ i32\textgreater{}} (5 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<number>: number} \(\blacksquare\)
+Stack after: \ldots,
+\texttt{\textless{}value\textgreater{}:\ boxed\ (number)}
+\(\blacksquare\)
 
-Pushes a number with value equal to \texttt{<number>} onto the stack.
+Pushes a boxed integer with value equal to
+\texttt{\textless{}value\textgreater{}} onto the stack.
 
-\subsubsection{\texttt{lgc.f32}: load boxed constant number (single-precision)}
-\label{sec:orgee247e4}
-Format: \texttt{0x04 <number: f32>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldc.f32}: load constant number
+(single-precision)}{ldc.f32: load constant number (single-precision)}}
 
-Stack before: \ldots{} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<number>: boxed (number)} \(\blacksquare\)
-
-Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
-
-\subsubsection{\texttt{ldc.f64}: load constant number (double-precision)}
-\label{sec:org6bba761}
-Format: \texttt{0x05 <number: f64>} (9 bytes)
+Format: \texttt{0x03\ \textless{}number:\ f32\textgreater{}} (5 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<number>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}number\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pushes a number with value equal to \texttt{<number>} onto the stack.
+Pushes a number with value equal to
+\texttt{\textless{}number\textgreater{}} onto the stack.
 
-\subsubsection{\texttt{lgc.f64}: load boxed constant number (double-precision)}
-\label{sec:orgae88789}
-Format: \texttt{0x06 <number: f64>} (9 bytes)
+\subsubsection{\texorpdfstring{\texttt{lgc.f32}: load boxed constant
+number
+(single-precision)}{lgc.f32: load boxed constant number (single-precision)}}
+
+Format: \texttt{0x04\ \textless{}number:\ f32\textgreater{}} (5 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<number>: boxed (number)} \(\blacksquare\)
+Stack after: \ldots,
+\texttt{\textless{}number\textgreater{}:\ boxed\ (number)}
+\(\blacksquare\)
 
-Pushes a boxed number with value equal to \texttt{<number>} onto the stack.
+Pushes a boxed number with value equal to
+\texttt{\textless{}number\textgreater{}} onto the stack.
 
-\subsubsection{\texttt{ldc.b.0}: load constant false}
-\label{sec:org628c82c}
+\subsubsection{\texorpdfstring{\texttt{ldc.f64}: load constant number
+(double-precision)}{ldc.f64: load constant number (double-precision)}}
+
+Format: \texttt{0x05\ \textless{}number:\ f64\textgreater{}} (9 bytes)
+
+Stack before: \ldots{} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}number\textgreater{}:\ number}
+\(\blacksquare\)
+
+Pushes a number with value equal to
+\texttt{\textless{}number\textgreater{}} onto the stack.
+
+\subsubsection{\texorpdfstring{\texttt{lgc.f64}: load boxed constant
+number
+(double-precision)}{lgc.f64: load boxed constant number (double-precision)}}
+
+Format: \texttt{0x06\ \textless{}number:\ f64\textgreater{}} (9 bytes)
+
+Stack before: \ldots{} \(\blacksquare\)
+
+Stack after: \ldots,
+\texttt{\textless{}number\textgreater{}:\ boxed\ (number)}
+\(\blacksquare\)
+
+Pushes a boxed number with value equal to
+\texttt{\textless{}number\textgreater{}} onto the stack.
+
+\subsubsection{\texorpdfstring{\texttt{ldc.b.0}: load constant
+false}{ldc.b.0: load constant false}}
+
 Format: \texttt{0x07}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{false: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{false:\ boolean} \(\blacksquare\)
 
 Pushes the boolean \texttt{false} onto the stack.
 
-\subsubsection{\texttt{ldc.b.1}: load constant true}
-\label{sec:org45a4edf}
+\subsubsection{\texorpdfstring{\texttt{ldc.b.1}: load constant
+true}{ldc.b.1: load constant true}}
+
 Format: \texttt{0x08}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{true: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{true:\ boolean} \(\blacksquare\)
 
 Pushes the boolean \texttt{true} onto the stack.
 
-\subsubsection{\texttt{lgc.b.0}: load boxed constant false}
-\label{sec:orgdf93d05}
+\subsubsection{\texorpdfstring{\texttt{lgc.b.0}: load boxed constant
+false}{lgc.b.0: load boxed constant false}}
+
 Format: \texttt{0x09}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{false: boxed (boolean)} \(\blacksquare\)
+Stack after: \ldots, \texttt{false:\ boxed\ (boolean)} \(\blacksquare\)
 
 Pushes a boxed boolean \texttt{false} onto the stack.
 
-\subsubsection{\texttt{lgc.b.1}: load boxed constant true}
-\label{sec:org79cc95f}
+\subsubsection{\texorpdfstring{\texttt{lgc.b.1}: load boxed constant
+true}{lgc.b.1: load boxed constant true}}
+
 Format: \texttt{0x0A}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{true: boxed (boolean)} \(\blacksquare\)
+Stack after: \ldots, \texttt{true:\ boxed\ (boolean)} \(\blacksquare\)
 
 Pushes a boxed boolean \texttt{true} onto the stack.
 
-\subsubsection{\texttt{lgc.u}: load boxed constant undefined}
-\label{sec:org5d44e29}
+\subsubsection{\texorpdfstring{\texttt{lgc.u}: load boxed constant
+undefined}{lgc.u: load boxed constant undefined}}
+
 Format: \texttt{0x0B}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{undefined: boxed (undefined)} \(\blacksquare\)
+Stack after: \ldots, \texttt{undefined:\ boxed\ (undefined)}
+\(\blacksquare\)
 
 Pushes a boxed \texttt{undefined} onto the stack.
 
-\subsubsection{\texttt{lgc.n}: load boxed constant null}
-\label{sec:org1969f37}
+\subsubsection{\texorpdfstring{\texttt{lgc.n}: load boxed constant
+null}{lgc.n: load boxed constant null}}
+
 Format: \texttt{0x0C}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{null: boxed (null)} \(\blacksquare\)
+Stack after: \ldots, \texttt{null:\ boxed\ (null)} \(\blacksquare\)
 
 Pushes a boxed \texttt{null} onto the stack.
 
-\subsubsection{\texttt{lgc.s}: load constant string}
-\label{sec:org2f69311}
-Format: \texttt{0x0D <address>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{lgc.s}: load constant
+string}{lgc.s: load constant string}}
+
+Format: \texttt{0x0D\ \textless{}address\textgreater{}} (5 bytes)
 
 In the JSON format, the string literal is specified directly instead.
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<string>: boxed (string)} \(\blacksquare\)
+Stack after: \ldots,
+\texttt{\textless{}string\textgreater{}:\ boxed\ (string)}
+\(\blacksquare\)
 
 Pushes the string at the given address onto the stack.
 
 The string at the given address should be null-terminated.
 
-\subsubsection{\texttt{pop.g}: pop boxed value from stack}
-\label{sec:org5cb332a}
+\subsubsection{\texorpdfstring{\texttt{pop.g}: pop boxed value from
+stack}{pop.g: pop boxed value from stack}}
+
 Format: \texttt{0x0E}
 
-Stack before: \ldots{}, \texttt{<value>: boxed} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}value\textgreater{}:\ boxed}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops a boxed value off the stack.
 
-Behaviour is undefined if \texttt{<value>} is not a boxed value.
+Behaviour is undefined if \texttt{\textless{}value\textgreater{}} is not
+a boxed value.
 
-\subsubsection{\texttt{pop.b}: pop boolean from stack}
-\label{sec:org55a65aa}
+\subsubsection{\texorpdfstring{\texttt{pop.b}: pop boolean from
+stack}{pop.b: pop boolean from stack}}
+
 Format: \texttt{0x0F}
 
-Stack before: \ldots{}, \texttt{<value>: boolean} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}value\textgreater{}:\ boolean}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops a boolean off the stack.
 
-Behaviour is undefined if \texttt{<value>} is not a boolean.
+Behaviour is undefined if \texttt{\textless{}value\textgreater{}} is not
+a boolean.
 
-\subsubsection{\texttt{pop.f}: pop number from stack}
-\label{sec:orgf652769}
+\subsubsection{\texorpdfstring{\texttt{pop.f}: pop number from
+stack}{pop.f: pop number from stack}}
+
 Format: \texttt{0x10}
 
-Stack before: \ldots{}, \texttt{<value>: number} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}value\textgreater{}:\ number}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops a number off the stack.
 
-Behaviour is undefined if \texttt{<value>} is not a number.
+Behaviour is undefined if \texttt{\textless{}value\textgreater{}} is not
+a number.
 
-\subsubsection{\texttt{add.g}: add boxed values}
-\label{sec:orgd3666a0}
+\subsubsection{\texorpdfstring{\texttt{add.g}: add boxed
+values}{add.g: add boxed values}}
+
 Format: \texttt{0x11}
 
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boxed}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
 
-If \texttt{<a>} and \texttt{<b>} are strings, pushes their concatenation
-\texttt{<c> = <a> + <b>} onto the stack.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are strings, pushes their
+concatenation
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ +\ \textless{}b\textgreater{}}
+onto the stack.
 
-If \texttt{<a>} and \texttt{<b>} are numbers, pushes their sum \texttt{<c> = <a> + <b>} onto
-the stack.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are numbers, pushes their sum
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ +\ \textless{}b\textgreater{}}
+onto the stack.
 
 Otherwise, a fault occurs.
 
-\subsubsection{\texttt{add.f}: add numbers}
-\label{sec:org117c408}
+\subsubsection{\texorpdfstring{\texttt{add.f}: add
+numbers}{add.f: add numbers}}
+
 Format: \texttt{0x12}
 
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their sum
-\texttt{<c> = <a> + <b>} onto the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes their sum
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ +\ \textless{}b\textgreater{}}
+onto the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
 
-\subsubsection{\texttt{sub.g}: subtract boxed values}
-\label{sec:org379b868}
+\subsubsection{\texorpdfstring{\texttt{sub.g}: subtract boxed
+values}{sub.g: subtract boxed values}}
+
 Format: \texttt{0x13}
 
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boxed}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
 
-If \texttt{<a>} and \texttt{<b>} are numbers, pushes their difference
-\texttt{<c> = <a> - <b>} onto the stack.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are numbers, pushes their difference
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ -\ \textless{}b\textgreater{}}
+onto the stack.
 
 Otherwise, a fault occurs.
 
-\subsubsection{\texttt{sub.f}: subtract numbers}
-\label{sec:org371fd15}
+\subsubsection{\texorpdfstring{\texttt{sub.f}: subtract
+numbers}{sub.f: subtract numbers}}
+
 Format: \texttt{0x14}
 
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their difference
-\texttt{<c> = <a> - <b>} onto the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes their
+difference
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ -\ \textless{}b\textgreater{}}
+onto the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
 
-\subsubsection{\texttt{mul.g}: multiply boxed values}
-\label{sec:org742c65a}
+\subsubsection{\texorpdfstring{\texttt{mul.g}: multiply boxed
+values}{mul.g: multiply boxed values}}
+
 Format: \texttt{0x15}
 
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boxed}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
 
-If \texttt{<a>} and \texttt{<b>} are numbers, pushes their product \texttt{<c> = <a> * <b>}
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are numbers, pushes their product
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ *\ \textless{}b\textgreater{}}
 onto the stack.
 
 Otherwise, a fault occurs.
 
-\subsubsection{\texttt{mul.f}: multiply numbers}
-\label{sec:org29a8cb0}
+\subsubsection{\texorpdfstring{\texttt{mul.f}: multiply
+numbers}{mul.f: multiply numbers}}
+
 Format: \texttt{0x16}
 
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their product
-\texttt{<c> = <a> * <b>} onto the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes their
+product
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ *\ \textless{}b\textgreater{}}
+onto the stack.
 
-If \texttt{<b>} is the number 0, a fault occurs.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
 
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+\subsubsection{\texorpdfstring{\texttt{div.g}: divide boxed
+values}{div.g: divide boxed values}}
 
-\subsubsection{\texttt{div.g}: divide boxed values}
-\label{sec:org97eb268}
 Format: \texttt{0x17}
 
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boxed}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
 
-If \texttt{<a>} and \texttt{<b>} are numbers, pushes their quotient \texttt{<c> = <a> / <b>}
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are numbers, pushes their quotient
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ /\ \textless{}b\textgreater{}}
 onto the stack.
 
 Otherwise, a fault occurs.
 
-\subsubsection{\texttt{div.f}: divide numbers}
-\label{sec:org9ea386e}
+\subsubsection{\texorpdfstring{\texttt{div.f}: divide
+numbers}{div.f: divide numbers}}
+
 Format: \texttt{0x18}
 
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes their quotient
-\texttt{<c> = <a> / <b>} onto the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
-
-\subsubsection{\texttt{mod.g}: modulo boxed values}
-\label{sec:org6afbbf6}
-Format: \texttt{0x19}
-
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boxed} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
-
-If \texttt{<a>} and \texttt{<b>} are numbers, pushes \texttt{<c> = <a> \% <b>} onto the stack.
-
-Otherwise, a fault occurs.
-
-\subsubsection{\texttt{mod.f}: modulo numbers}
-\label{sec:orgf4bf035}
-Format: \texttt{0x1A}
-
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: number} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> \% <b>} onto
-the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
-
-\subsubsection{\texttt{not.g}: negate boxed value}
-\label{sec:org4404772}
-Format: \texttt{0x1B}
-
-Stack before: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Pops \texttt{<a>} off the stack.
-
-If \texttt{<a>} is a boolean, pushes its negation \texttt{<b>} onto the stack.
-
-Otherwise, a fault occurs.
-
-\subsubsection{\texttt{not.b}: negate boolean}
-\label{sec:org446322c}
-Format: \texttt{0x1C}
-
-Stack before: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<b>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} off the stack, then pushes its negation \texttt{<b>} onto the stack.
-
-If \texttt{<a>} is not a boolean, behaviour is undefined.
-
-\subsubsection{\texttt{lt.g}: less than, boxed operands}
-\label{sec:org5479aa3}
-Format: \texttt{0x1D}
-
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
-
-If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
-\texttt{<c> = <a> < <b>}, with the obvious meaning if both operands are
-numbers, and comparing the operands by lexicographical order if they are
-strings.
-
-Otherwise, a fault occurs.
-
-\subsubsection{\texttt{lt.f}: less than, number operands}
-\label{sec:orga91f7a6}
-Format: \texttt{0x1E}
-
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> < <b>} onto
-the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
-
-\subsubsection{\texttt{gt.g}: greater than, boxed operands}
-\label{sec:orge89bbc6}
-Format: \texttt{0x1F}
-
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
-
-If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
-\texttt{<c> = <a> > <b>}, with the obvious meaning if both operands are
-numbers, and comparing the operands by lexicographical order if they are
-strings.
-
-Otherwise, a fault occurs.
-
-\subsubsection{\texttt{gt.f}: greater than, number operands}
-\label{sec:org3ea3931}
-Format: \texttt{0x20}
-
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> > <b>} onto
-the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
-
-\subsubsection{\texttt{le.g}: less than or equal to, boxed operands}
-\label{sec:orgf9e2550}
-Format: \texttt{0x21}
-
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
-
-If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
-\texttt{<c> = <a> <} <b>=, with the obvious meaning if both operands are
-numbers, and comparing the operands by lexicographical order if they are
-strings.
-
-Otherwise, a fault occurs.
-
-\subsubsection{\texttt{le.f}: less than or equal to, number operands}
-\label{sec:orgef83a7a}
-Format: \texttt{0x22}
-
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> <} <b>= onto
-the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
-
-\subsubsection{\texttt{ge.g}: greater than or equal to, boxed operands}
-\label{sec:org7e275af}
-Format: \texttt{0x23}
-
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
-
-If \texttt{<a>} and \texttt{<b>} are both strings or both numbers, pushes
-\texttt{<c> = <a> >} <b>=, with the obvious meaning if both operands are
-numbers, and comparing the operands by lexicographical order if they are
-strings.
-
-Otherwise, a fault occurs.
-
-\subsubsection{\texttt{ge.f}: greater than or equal to, number operands}
-\label{sec:org24757e3}
-Format: \texttt{0x24}
-
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> >} <b>= onto
-the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
-
-\subsubsection{\texttt{eq.g}: equal, boxed operands}
-\label{sec:orgb222de9}
-Format: \texttt{0x25}
-
-Stack before: \ldots{}, \texttt{<a>: boxed}, \texttt{<b>: boxed} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
-
-Pops \texttt{<a>} and \texttt{<b>} off the stack.
-
-If \texttt{<a>} and \texttt{<b>} are not boxed values, behaviour is undefined.
-
-If \texttt{<a>} and \texttt{<b>} are of different types, pushes \texttt{false} onto the
-stack.
-
-If \texttt{<a>} and \texttt{<b>} are both \texttt{undefined} or both \texttt{null}, pushes \texttt{true}
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ number}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes their
+quotient
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ /\ \textless{}b\textgreater{}}
 onto the stack.
 
-If \texttt{<a>} and \texttt{<b>} are both booleans, both numbers or both strings,
-pushes \texttt{true} onto the stack if they have the same value, otherwise
-pushes \texttt{false} onto the stack.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
 
-If \texttt{<a>} and \texttt{<b>} are both functions or both arrays, pushes \texttt{true} onto
-the stack if they are referentially equal i.e. they refer to the exact
-same array or function object, otherwise pushes \texttt{false} onto the stack.
+\subsubsection{\texorpdfstring{\texttt{mod.g}: modulo boxed
+values}{mod.g: modulo boxed values}}
+
+Format: \texttt{0x19}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boxed}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are numbers, pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \%\ \textless{}b\textgreater{}}
+onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{mod.f}: modulo
+numbers}{mod.f: modulo numbers}}
+
+Format: \texttt{0x1A}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ number}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \%\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{neg.g}: negate boxed
+value}{neg.g: negate boxed value}}
+
+Format: \texttt{0x50}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed}
+\(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}b\textgreater{}:\ boxed}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} is not a boxed value, behaviour
+is undefined.
+
+If \texttt{\textless{}a\textgreater{}} is a number, pushes
+\texttt{\textless{}b\textgreater{}\ =\ -\textless{}a\textgreater{}} onto
+the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{neg.f}: negate
+number}{neg.f: negate number}}
+
+Format: \texttt{0x51}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number}
+\(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}b\textgreater{}:\ number}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} off the stack, then pushes
+\texttt{\textless{}b\textgreater{}\ =\ -\textless{}a\textgreater{}} onto
+the stack.
+
+If \texttt{\textless{}a\textgreater{}} is not a number, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{not.g}: negate boxed
+value}{not.g: negate boxed value}}
+
+Format: \texttt{0x1B}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed}
+\(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}b\textgreater{}:\ boxed}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} is a boolean, pushes its negation
+\texttt{\textless{}b\textgreater{}} onto the stack.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{not.b}: negate
+boolean}{not.b: negate boolean}}
+
+Format: \texttt{0x1C}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}b\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} off the stack, then pushes its
+negation \texttt{\textless{}b\textgreater{}} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} is not a boolean, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{lt.g}: less than, boxed
+operands}{lt.g: less than, boxed operands}}
+
+Format: \texttt{0x1D}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both strings or both numbers,
+pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textless{}\ \textless{}b\textgreater{}},
+with the obvious meaning if both operands are numbers, and comparing the
+operands by lexicographical order if they are strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{lt.f}: less than, number
+operands}{lt.f: less than, number operands}}
+
+Format: \texttt{0x1E}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textless{}\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{gt.g}: greater than, boxed
+operands}{gt.g: greater than, boxed operands}}
+
+Format: \texttt{0x1F}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both strings or both numbers,
+pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textgreater{}\ \textless{}b\textgreater{}},
+with the obvious meaning if both operands are numbers, and comparing the
+operands by lexicographical order if they are strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{gt.f}: greater than, number
+operands}{gt.f: greater than, number operands}}
+
+Format: \texttt{0x20}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textgreater{}\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{le.g}: less than or equal to,
+boxed operands}{le.g: less than or equal to, boxed operands}}
+
+Format: \texttt{0x21}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both strings or both numbers,
+pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textless{}=\ \textless{}b\textgreater{}},
+with the obvious meaning if both operands are numbers, and comparing the
+operands by lexicographical order if they are strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{le.f}: less than or equal to,
+number operands}{le.f: less than or equal to, number operands}}
+
+Format: \texttt{0x22}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textless{}=\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{ge.g}: greater than or equal to,
+boxed operands}{ge.g: greater than or equal to, boxed operands}}
+
+Format: \texttt{0x23}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both strings or both numbers,
+pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textgreater{}=\ \textless{}b\textgreater{}},
+with the obvious meaning if both operands are numbers, and comparing the
+operands by lexicographical order if they are strings.
+
+Otherwise, a fault occurs.
+
+\subsubsection{\texorpdfstring{\texttt{ge.f}: greater than or equal to,
+number operands}{ge.f: greater than or equal to, number operands}}
+
+Format: \texttt{0x24}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ \textgreater{}=\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{eq.g}: equal, boxed
+operands}{eq.g: equal, boxed operands}}
+
+Format: \texttt{0x25}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are of different types, pushes
+\texttt{false} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both \texttt{undefined} or both
+\texttt{null}, pushes \texttt{true} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both booleans, both numbers or
+both strings, pushes \texttt{true} onto the stack if they have the same
+value, otherwise pushes \texttt{false} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both functions or both arrays,
+pushes \texttt{true} onto the stack if they are referentially equal
+i.e.~they refer to the exact same array or function object, otherwise
+pushes \texttt{false} onto the stack.
 
 The above cases are exhaustive.
 
-\subsubsection{\texttt{eq.f}: equal, number operands}
-\label{sec:orge0a190c}
+\subsubsection{\texorpdfstring{\texttt{eq.f}: equal, number
+operands}{eq.f: equal, number operands}}
+
 Format: \texttt{0x26}
 
-Stack before: \ldots{}, \texttt{<a>: number}, \texttt{<b>: number} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> =} <b>= onto
-the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ ==\ \textless{}b\textgreater{}}
+onto the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not numbers, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
 
-\subsubsection{\texttt{eq.b}: equal, boolean operands}
-\label{sec:org73ca0ae}
+\subsubsection{\texorpdfstring{\texttt{eq.b}: equal, boolean
+operands}{eq.b: equal, boolean operands}}
+
 Format: \texttt{0x27}
 
-Stack before: \ldots{}, \texttt{<a>: boolean}, \texttt{<b>: boolean} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean},
+\texttt{\textless{}b\textgreater{}:\ boolean} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
 
-Pops \texttt{<a>} and \texttt{<b>} off the stack, then pushes \texttt{<c> = <a> =} <b>= onto
-the stack.
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ ==\ \textless{}b\textgreater{}}
+onto the stack.
 
-If \texttt{<a>} and \texttt{<b>} are not booleans, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not booleans, behaviour is
+undefined.
 
-\subsubsection{\texttt{new.c}: create function}
-\label{sec:org1d41a06}
-Format: \texttt{0x28 <address>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{neq.g}: not equal, boxed
+operands}{neq.g: not equal, boxed operands}}
+
+Format: \texttt{0x52}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed},
+\texttt{\textless{}b\textgreater{}:\ boxed} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not boxed values, behaviour is
+undefined.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are of different types, pushes
+\texttt{true} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both \texttt{undefined} or both
+\texttt{null}, pushes \texttt{false} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both booleans, both numbers or
+both strings, pushes \texttt{false} onto the stack if they have the same
+value, otherwise pushes \texttt{true} onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are both functions or both arrays,
+pushes \texttt{false} onto the stack if they are referentially equal
+i.e.~they refer to the exact same array or function object, otherwise
+pushes \texttt{true} onto the stack.
+
+The above cases are exhaustive.
+
+\subsubsection{\texorpdfstring{\texttt{neq.f}: not equal, number
+operands}{neq.f: not equal, number operands}}
+
+Format: \texttt{0x53}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number},
+\texttt{\textless{}b\textgreater{}:\ number} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ !=\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not numbers, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{neq.b}: not equal, boolean
+operands}{neq.b: not equal, boolean operands}}
+
+Format: \texttt{0x54}
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean},
+\texttt{\textless{}b\textgreater{}:\ boolean} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}c\textgreater{}:\ boolean}
+\(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} off the stack, then pushes
+\texttt{\textless{}c\textgreater{}\ =\ \textless{}a\textgreater{}\ !=\ \textless{}b\textgreater{}}
+onto the stack.
+
+If \texttt{\textless{}a\textgreater{}} and
+\texttt{\textless{}b\textgreater{}} are not booleans, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{new.c}: create
+function}{new.c: create function}}
+
+Format: \texttt{0x28\ \textless{}address\textgreater{}} (5 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<c>: boxed (function)} \(\blacksquare\)
+Stack after: \ldots,
+\texttt{\textless{}c\textgreater{}:\ boxed\ (function)} \(\blacksquare\)
 
-Pushes a new function object \texttt{<c>} onto the stack referring to the
-function at the given address.
+Pushes a new function object \texttt{\textless{}c\textgreater{}} onto
+the stack referring to the function at the given address.
 
-\subsubsection{\texttt{new.a}: create array}
-\label{sec:orgcc2c694}
+\subsubsection{\texorpdfstring{\texttt{new.c.p}: create function object
+for primitive
+function}{new.c.p: create function object for primitive function}}
+
+Format: \texttt{0x4E\ \textless{}id:\ u8\textgreater{}} (2 bytes)
+
+Stack before: \ldots{} \(\blacksquare\)
+
+Stack after: \ldots,
+\texttt{\textless{}c\textgreater{}:\ boxed\ (function)} \(\blacksquare\)
+
+Pushes a new function object \texttt{\textless{}c\textgreater{}} onto
+the stack that represents the primitive function with the given
+\texttt{\textless{}id\textgreater{}}.
+
+\subsubsection{\texorpdfstring{\texttt{new.c.v}: create function object
+for VM-internal
+function}{new.c.v: create function object for VM-internal function}}
+
+Format: \texttt{0x4F\ \textless{}id:\ u8\textgreater{}} (2 bytes)
+
+Stack before: \ldots{} \(\blacksquare\)
+
+Stack after: \ldots,
+\texttt{\textless{}c\textgreater{}:\ boxed\ (function)} \(\blacksquare\)
+
+Pushes a new function object \texttt{\textless{}c\textgreater{}} onto
+the stack that represents the VM-internal function with the given
+\texttt{\textless{}id\textgreater{}}.
+
+\subsubsection{\texorpdfstring{\texttt{new.a}: create
+array}{new.a: create array}}
+
 Format: \texttt{0x29}
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: boxed (array)} \(\blacksquare\)
+Stack after: \ldots,
+\texttt{\textless{}a\textgreater{}:\ boxed\ (array)} \(\blacksquare\)
 
 Pushes a new empty array onto the stack.
 
-\subsubsection{\texttt{ldl.g}: load boxed value from current environment}
-\label{sec:orgbae78d9}
-Format: \texttt{0x2A <index: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldl.g}: load boxed value from
+current environment}{ldl.g: load boxed value from current environment}}
+
+Format: \texttt{0x2A\ \textless{}index:\ u8\textgreater{}} (2 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed}
+\(\blacksquare\)
 
-Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
-the stack.
+Pushes the value \texttt{\textless{}a\textgreater{}} at index
+\texttt{index} in the current environment onto the stack.
 
-If the value at index \texttt{index} in the current environment is not a boxed
-value, behaviour is undefined.
+If the value at index \texttt{index} in the current environment is not a
+boxed value, behaviour is undefined.
 
-\subsubsection{\texttt{ldl.f}: load number from current environment}
-\label{sec:orgb7a98c2}
-Format: \texttt{0x2B <index: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldl.f}: load number from current
+environment}{ldl.f: load number from current environment}}
+
+Format: \texttt{0x2B\ \textless{}index:\ u8\textgreater{}} (2 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}a\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
-the stack.
+Pushes the value \texttt{\textless{}a\textgreater{}} at index
+\texttt{index} in the current environment onto the stack.
 
 If the value at index \texttt{index} in the current environment is not a
 number, behaviour is undefined.
 
-\subsubsection{\texttt{ldl.b}: load boolean from current environment}
-\label{sec:org671ebc7}
-Format: \texttt{0x2C <index: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldl.b}: load boolean from current
+environment}{ldl.b: load boolean from current environment}}
+
+Format: \texttt{0x2C\ \textless{}index:\ u8\textgreater{}} (2 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean}
+\(\blacksquare\)
 
-Pushes the value \texttt{<a>} at index \texttt{index} in the current environment onto
-the stack.
+Pushes the value \texttt{\textless{}a\textgreater{}} at index
+\texttt{index} in the current environment onto the stack.
 
 If the value at index \texttt{index} in the current environment is not a
 boolean, behaviour is undefined.
 
-\subsubsection{\texttt{stl.g}: store boxed value into current environment}
-\label{sec:org466d475}
-Format: \texttt{0x2D <index: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{stl.g}: store boxed value into
+current environment}{stl.g: store boxed value into current environment}}
 
-Stack before: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
+Format: \texttt{0x2D\ \textless{}index:\ u8\textgreater{}} (2 bytes)
 
-Stack after: \ldots{} \(\blacksquare\)
-
-Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
-environment.
-
-If \texttt{<a>} is not a boxed value, behaviour is undefined.
-
-\subsubsection{\texttt{stl.b}: store boolean into current environment}
-\label{sec:org711619f}
-Format: \texttt{0x2E <index: u8>} (2 bytes)
-
-Stack before: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
-Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
-environment.
+Pops \texttt{\textless{}a\textgreater{}} off the stack and stores it in
+index \texttt{index} in the current environment.
 
-If \texttt{<a>} is not a boolean, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} is not a boxed value, behaviour
+is undefined.
 
-\subsubsection{\texttt{stl.f}: store number into current environment}
-\label{sec:org29b23b4}
-Format: \texttt{0x2F <index: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{stl.b}: store boolean into
+current environment}{stl.b: store boolean into current environment}}
 
-Stack before: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
+Format: \texttt{0x2E\ \textless{}index:\ u8\textgreater{}} (2 bytes)
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
-Pops \texttt{<a>} off the stack and stores it in index \texttt{index} in the current
-environment.
+Pops \texttt{\textless{}a\textgreater{}} off the stack and stores it in
+index \texttt{index} in the current environment.
 
-If \texttt{<a>} is not a number, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} is not a boolean, behaviour is
+undefined.
 
-\subsubsection{\texttt{ldp.g}: load boxed value from (parent) environment}
-\label{sec:org445285b}
-Format: \texttt{0x30 <index: u8> <envindex: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{stl.f}: store number into current
+environment}{stl.f: store number into current environment}}
+
+Format: \texttt{0x2F\ \textless{}index:\ u8\textgreater{}} (2 bytes)
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number}
+\(\blacksquare\)
+
+Stack after: \ldots{} \(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} off the stack and stores it in
+index \texttt{index} in the current environment.
+
+If \texttt{\textless{}a\textgreater{}} is not a number, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{ldp.g}: load boxed value from
+(parent)
+environment}{ldp.g: load boxed value from (parent) environment}}
+
+Format:
+\texttt{0x30\ \textless{}index:\ u8\textgreater{}\ \textless{}envindex:\ u8\textgreater{}}
+(3 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed}
+\(\blacksquare\)
 
-Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
-current environment onto the stack. If =envindex} is \texttt{0}, this is
-equivalent to \texttt{ldl.g}.
+Pushes the value at index \texttt{index} in the \texttt{envindex}th
+parent of the current environment onto the stack. If \texttt{envindex}
+is \texttt{0}, this is equivalent to \texttt{ldl.g}.
 
 If the value is not a boxed value, behaviour is undefined.
 
-\subsubsection{\texttt{ldp.f}: load number from (parent) environment}
-\label{sec:orgf48099d}
-Format: \texttt{0x31 <index: u8> <envindex: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldp.f}: load number from (parent)
+environment}{ldp.f: load number from (parent) environment}}
+
+Format:
+\texttt{0x31\ \textless{}index:\ u8\textgreater{}\ \textless{}envindex:\ u8\textgreater{}}
+(3 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}a\textgreater{}:\ number}
+\(\blacksquare\)
 
-Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
-current environment onto the stack. If =envindex} is \texttt{0}, this is
-equivalent to \texttt{ldl.f}.
+Pushes the value at index \texttt{index} in the \texttt{envindex}th
+parent of the current environment onto the stack. If \texttt{envindex}
+is \texttt{0}, this is equivalent to \texttt{ldl.f}.
 
 If the value is not a number, behaviour is undefined.
 
-\subsubsection{\texttt{ldp.b}: load boolean from (parent) environment}
-\label{sec:org74003ff}
-Format: \texttt{0x32 <index: u8> <envindex: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{ldp.b}: load boolean from
+(parent) environment}{ldp.b: load boolean from (parent) environment}}
+
+Format:
+\texttt{0x32\ \textless{}index:\ u8\textgreater{}\ \textless{}envindex:\ u8\textgreater{}}
+(3 bytes)
 
 Stack before: \ldots{} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean}
+\(\blacksquare\)
 
-Pushes the value at index \texttt{index} in the \texttt{envindex=th parent of the
-current environment onto the stack. If =envindex} is \texttt{0}, this is
-equivalent to \texttt{ldl.f}.
+Pushes the value at index \texttt{index} in the \texttt{envindex}th
+parent of the current environment onto the stack. If \texttt{envindex}
+is \texttt{0}, this is equivalent to \texttt{ldl.f}.
 
 If the value is not a boolean, behaviour is undefined.
 
-\subsubsection{\texttt{stp.g}: store boxed value into (parent) environment}
-\label{sec:org3861b91}
-Format: \texttt{0x33 <index: u8> <envindex: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{stp.g}: store boxed value into
+(parent)
+environment}{stp.g: store boxed value into (parent) environment}}
 
-Stack before: \ldots{}, \texttt{<a>: boxed} \(\blacksquare\)
+Format:
+\texttt{0x33\ \textless{}index:\ u8\textgreater{}\ \textless{}envindex:\ u8\textgreater{}}
+(3 bytes)
 
-Stack after: \ldots{} \(\blacksquare\)
-
-Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
-=envindex=th parent of the current environment.
-
-If \texttt{<a>} is not a boxed value, behaviour is undefined.
-
-\subsubsection{\texttt{stp.b}: store boolean into (parent) environment}
-\label{sec:org15feb28}
-Format: \texttt{0x34 <index: u8> <envindex: u8>} (3 bytes)
-
-Stack before: \ldots{}, \texttt{<a>: boolean} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boxed}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
-Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
-=envindex=th parent of the current environment.
+Pops \texttt{\textless{}a\textgreater{}} off the stack, and stores
+\texttt{\textless{}a\textgreater{}} into index \texttt{index} in the
+\texttt{envindex}th parent of the current environment.
 
-If \texttt{<a>} is not a boolean, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} is not a boxed value, behaviour
+is undefined.
 
-\subsubsection{\texttt{stp.f}: store number into (parent) environment}
-\label{sec:org4696eef}
-Format: \texttt{0x35 <index: u8> <envindex: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{stp.b}: store boolean into
+(parent) environment}{stp.b: store boolean into (parent) environment}}
 
-Stack before: \ldots{}, \texttt{<a>: number} \(\blacksquare\)
+Format:
+\texttt{0x34\ \textless{}index:\ u8\textgreater{}\ \textless{}envindex:\ u8\textgreater{}}
+(3 bytes)
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ boolean}
+\(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
-Pops \texttt{<a>} off the stack, and stores \texttt{<a>} into index \texttt{index} in the
-=envindex=th parent of the current environment.
+Pops \texttt{\textless{}a\textgreater{}} off the stack, and stores
+\texttt{\textless{}a\textgreater{}} into index \texttt{index} in the
+\texttt{envindex}th parent of the current environment.
 
-If \texttt{<a>} is not a number, behaviour is undefined.
+If \texttt{\textless{}a\textgreater{}} is not a boolean, behaviour is
+undefined.
 
-\subsubsection{\texttt{lda.g}: load boxed value from array}
-\label{sec:org0b3a1ff}
+\subsubsection{\texorpdfstring{\texttt{stp.f}: store number into
+(parent) environment}{stp.f: store number into (parent) environment}}
+
+Format:
+\texttt{0x35\ \textless{}index:\ u8\textgreater{}\ \textless{}envindex:\ u8\textgreater{}}
+(3 bytes)
+
+Stack before: \ldots, \texttt{\textless{}a\textgreater{}:\ number}
+\(\blacksquare\)
+
+Stack after: \ldots{} \(\blacksquare\)
+
+Pops \texttt{\textless{}a\textgreater{}} off the stack, and stores
+\texttt{\textless{}a\textgreater{}} into index \texttt{index} in the
+\texttt{envindex}th parent of the current environment.
+
+If \texttt{\textless{}a\textgreater{}} is not a number, behaviour is
+undefined.
+
+\subsubsection{\texorpdfstring{\texttt{lda.g}: load boxed value from
+array}{lda.g: load boxed value from array}}
+
 Format: \texttt{0x36}
 
-Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}array\textgreater{}:\ boxed\ (array)},
+\texttt{\textless{}index\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<value>: boxed} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}value\textgreater{}:\ boxed}
+\(\blacksquare\)
 
 Pops \texttt{index} and \texttt{array} off the stack.
 
-If \texttt{index} is a non-negative integer, pushes the value at index \texttt{index}
-in \texttt{array} onto the stack.
+If \texttt{index} is a non-negative integer, pushes the value at index
+\texttt{index} in \texttt{array} onto the stack.
 
 Otherwise, a fault occurs.
 
-Behaviour is undefined if the value at index \texttt{index} in array is not a
-boxed value.
+Behaviour is undefined if the value at index \texttt{index} in array is
+not a boxed value.
 
-\subsubsection{\texttt{lda.b}: load boolean from array}
-\label{sec:orgb1de169}
+\subsubsection{\texorpdfstring{\texttt{lda.b}: load boolean from
+array}{lda.b: load boolean from array}}
+
 Format: \texttt{0x37}
 
-Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}array\textgreater{}:\ boxed\ (array)},
+\texttt{\textless{}index\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<value>: boolean} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}value\textgreater{}:\ boolean}
+\(\blacksquare\)
 
 Pops \texttt{index} and \texttt{array} off the stack.
 
-If \texttt{index} is a non-negative integer, pushes the value at index \texttt{index}
-in \texttt{array} onto the stack.
+If \texttt{index} is a non-negative integer, pushes the value at index
+\texttt{index} in \texttt{array} onto the stack.
 
 Otherwise, a fault occurs.
 
-Behaviour is undefined if the value at index \texttt{index} in array is not a
-boolean.
+Behaviour is undefined if the value at index \texttt{index} in array is
+not a boolean.
 
-\subsubsection{\texttt{lda.f}: load number from array}
-\label{sec:orgdc8e9a7}
+\subsubsection{\texorpdfstring{\texttt{lda.f}: load number from
+array}{lda.f: load number from array}}
+
 Format: \texttt{0x38}
 
-Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}array\textgreater{}:\ boxed\ (array)},
+\texttt{\textless{}index\textgreater{}:\ number} \(\blacksquare\)
 
-Stack after: \ldots{}, \texttt{<value>: number} \(\blacksquare\)
+Stack after: \ldots, \texttt{\textless{}value\textgreater{}:\ number}
+\(\blacksquare\)
 
 Pops \texttt{index} and \texttt{array} off the stack.
 
-If \texttt{index} is a non-negative integer, pushes the value at index \texttt{index}
-in \texttt{array} onto the stack.
+If \texttt{index} is a non-negative integer, pushes the value at index
+\texttt{index} in \texttt{array} onto the stack.
 
 Otherwise, a fault occurs.
 
-Behaviour is undefined if the value at index \texttt{index} in array is not a
-number.
+Behaviour is undefined if the value at index \texttt{index} in array is
+not a number.
 
-\subsubsection{\texttt{sta.g}: store boxed value into array}
-\label{sec:org4724d89}
+\subsubsection{\texorpdfstring{\texttt{sta.g}: store boxed value into
+array}{sta.g: store boxed value into array}}
+
 Format: \texttt{0x39}
 
-Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
-\texttt{<value>: boxed} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}array\textgreater{}:\ boxed\ (array)},
+\texttt{\textless{}index\textgreater{}:\ number},
+\texttt{\textless{}value\textgreater{}:\ boxed} \(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
 
-If \texttt{index} is a non-negative integer, stores \texttt{value} into index \texttt{index}
-in \texttt{array}.
+If \texttt{index} is a non-negative integer, stores \texttt{value} into
+index \texttt{index} in \texttt{array}.
 
 Otherwise, a fault occurs.
 
 Behaviour is undefined if \texttt{value} is not a boxed value.
 
-\subsubsection{\texttt{sta.b}: store boolean into array}
-\label{sec:org8e9e3f6}
+\subsubsection{\texorpdfstring{\texttt{sta.b}: store boolean into
+array}{sta.b: store boolean into array}}
+
 Format: \texttt{0x3A}
 
-Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
-\texttt{<value>: boolean} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}array\textgreater{}:\ boxed\ (array)},
+\texttt{\textless{}index\textgreater{}:\ number},
+\texttt{\textless{}value\textgreater{}:\ boolean} \(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
 
-If \texttt{index} is a non-negative integer, stores \texttt{value} into index \texttt{index}
-in \texttt{array}.
+If \texttt{index} is a non-negative integer, stores \texttt{value} into
+index \texttt{index} in \texttt{array}.
 
 Otherwise, a fault occurs.
 
 Behaviour is undefined if \texttt{value} is not a boolean.
 
-\subsubsection{\texttt{sta.f}: store number into array}
-\label{sec:org3dfaf54}
+\subsubsection{\texorpdfstring{\texttt{sta.f}: store number into
+array}{sta.f: store number into array}}
+
 Format: \texttt{0x3B}
 
-Stack before: \ldots{}, \texttt{<array>: boxed (array)}, \texttt{<index>: number},
-\texttt{<value>: number} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}array\textgreater{}:\ boxed\ (array)},
+\texttt{\textless{}index\textgreater{}:\ number},
+\texttt{\textless{}value\textgreater{}:\ number} \(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{value}, \texttt{index} and \texttt{array} off the stack.
 
-If \texttt{index} is a non-negative integer, stores \texttt{value} into index \texttt{index}
-in \texttt{array}.
+If \texttt{index} is a non-negative integer, stores \texttt{value} into
+index \texttt{index} in \texttt{array}.
 
 Otherwise, a fault occurs.
 
 Behaviour is undefined if \texttt{value} is not a number.
 
-\subsubsection{\texttt{br.t}: branch if true}
-\label{sec:orge20199f}
-Format: \texttt{0x3C <offset>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{br.t}: branch if
+true}{br.t: branch if true}}
 
-Stack before: \ldots{}, \texttt{<condition>: boolean} \(\blacksquare\)
+Format: \texttt{0x3C\ \textless{}offset\textgreater{}} (5 bytes)
+
+Stack before: \ldots,
+\texttt{\textless{}condition\textgreater{}:\ boolean} \(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{condition} off the stack.
 
-If \texttt{condition} is a boolean and is true, skips \texttt{offset} bytes starting
-from after the current instruction. That is, \texttt{br.t 0} is a no-op.
+If \texttt{condition} is a boolean and is true, skips \texttt{offset}
+bytes starting from after the current instruction. That is,
+\texttt{br.t\ 0} is a no-op.
 
 Note that \texttt{offset} can be negative.
 
@@ -1104,18 +1418,21 @@ If \texttt{condition} is a boolean and is false, does nothing.
 
 Otherwise, a fault occurs.
 
-\subsubsection{\texttt{br.f}: branch if false}
-\label{sec:org6c72b12}
-Format: \texttt{0x3D <offset>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{br.f}: branch if
+false}{br.f: branch if false}}
 
-Stack before: \ldots{}, \texttt{<condition>: boolean} \(\blacksquare\)
+Format: \texttt{0x3D\ \textless{}offset\textgreater{}} (5 bytes)
+
+Stack before: \ldots,
+\texttt{\textless{}condition\textgreater{}:\ boolean} \(\blacksquare\)
 
 Stack after: \ldots{} \(\blacksquare\)
 
 Pops \texttt{condition} off the stack.
 
-If \texttt{condition} is a boolean and is false, skips \texttt{offset} bytes starting
-from after the current instruction. That is, \texttt{br.f 0} is a no-op.
+If \texttt{condition} is a boolean and is false, skips \texttt{offset}
+bytes starting from after the current instruction. That is,
+\texttt{br.f\ 0} is a no-op.
 
 Note that \texttt{offset} can be negative.
 
@@ -1123,32 +1440,37 @@ If \texttt{condition} is a boolean and is true, does nothing.
 
 Otherwise, a fault occurs.
 
-\subsubsection{\texttt{br}: branch}
-\label{sec:org71bb9a3}
-Format: \texttt{0x3E <offset>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{br}: branch}{br: branch}}
+
+Format: \texttt{0x3E\ \textless{}offset\textgreater{}} (5 bytes)
 
 Does not modify the stack.
 
-Skips \texttt{offset} bytes starting from after the current instruction. That
-is, \texttt{br 0} is a no-op.
+Skips \texttt{offset} bytes starting from after the current instruction.
+That is, \texttt{br\ 0} is a no-op.
 
 Note that \texttt{offset} can be negative.
 
-\subsubsection{\texttt{jmp}: jump}
-\label{sec:orgeb956da}
-Format: \texttt{0x3F <address>} (5 bytes)
+\subsubsection{\texorpdfstring{\texttt{jmp}: jump}{jmp: jump}}
+
+Format: \texttt{0x3F\ \textless{}address\textgreater{}} (5 bytes)
 
 Jumps to \texttt{address}. Note: the current environment and stack are
 unchanged.
 
-\subsubsection{\texttt{call}: call function}
-\label{sec:orgc60978b}
-Format: \texttt{0x40 <numargs: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{call}: call
+function}{call: call function}}
 
-Stack before: \ldots{}, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{},
-\texttt{<aN>} \(\blacksquare\)
+Format: \texttt{0x40\ \textless{}numargs:\ u8\textgreater{}} (2 bytes)
 
-Stack after: \ldots{}, \texttt{<r>} \(\blacksquare\)
+Stack before: \ldots,
+\texttt{\textless{}f\textgreater{}:\ boxed\ (function)},
+\texttt{\textless{}a1\textgreater{}},
+\texttt{\textless{}a2\textgreater{}}, \ldots,
+\texttt{\textless{}aN\textgreater{}} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}r\textgreater{}}
+\(\blacksquare\)
 
 Pops the arguments to be passed to the function off the stack in reverse
 order, followed by the function to be called. That is, pop the last
@@ -1164,16 +1486,21 @@ determined by the function header as referred to by the function object.
 Behaviour is undefined if arguments on the stack are of different types
 compared to the types specified in the function header.
 
-A fault occurs if the number of arguments specified in \texttt{<numargs>} is
-different from the number of arguments expected by the function as
-specified in the function header.
+A fault occurs if the number of arguments specified in
+\texttt{\textless{}numargs\textgreater{}} is different from the number
+of arguments expected by the function as specified in the function
+header.
 
-\subsubsection{\texttt{call.t}: tail call function}
-\label{sec:org026b562}
-Format: \texttt{0x41 <numargs: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{call.t}: tail call
+function}{call.t: tail call function}}
 
-Stack before: \ldots{}, \texttt{<f>: boxed (function)}, \texttt{<a1>}, \texttt{<a2>}, \ldots{},
-\texttt{<aN>} \(\blacksquare\)
+Format: \texttt{0x41\ \textless{}numargs:\ u8\textgreater{}} (2 bytes)
+
+Stack before: \ldots,
+\texttt{\textless{}f\textgreater{}:\ boxed\ (function)},
+\texttt{\textless{}a1\textgreater{}},
+\texttt{\textless{}a2\textgreater{}}, \ldots,
+\texttt{\textless{}aN\textgreater{}} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1192,24 +1519,31 @@ determined by the function header as referred to by the function object.
 Behaviour is undefined if arguments on the stack are of different types
 compared to the types specified in the function header.
 
-A fault occurs if the number of arguments specified in \texttt{<numargs>} is
-different from the number of arguments expected by the function as
-specified in the function header.
+A fault occurs if the number of arguments specified in
+\texttt{\textless{}numargs\textgreater{}} is different from the number
+of arguments expected by the function as specified in the function
+header.
 
-\subsubsection{\texttt{call.p}: call primitive function}
-\label{sec:org99bb90f}
-Format: \texttt{0x42 <id: u8> <numargs: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{call.p}: call primitive
+function}{call.p: call primitive function}}
 
-Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
+Format:
+\texttt{0x42\ \textless{}id:\ u8\textgreater{}\ \textless{}numargs:\ u8\textgreater{}}
+(3 bytes)
 
-Stack after: \ldots{}, \texttt{<r>} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a1\textgreater{}},
+\texttt{\textless{}a2\textgreater{}}, \ldots,
+\texttt{\textless{}aN\textgreater{}} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}r\textgreater{}}
+\(\blacksquare\)
 
 Pops the arguments to be passed to the function off the stack in reverse
 order. That is, pop the last argument, followed by the second last, and
 so on, until the first argument.
 
-Calls the primitive function with the given \texttt{id}, and then pushes the
-return value of the function onto the stack.
+Calls the primitive function with the given \texttt{id}, and then pushes
+the return value of the function onto the stack.
 
 The types of the arguments are as specified in the list of primitive
 functions.
@@ -1217,53 +1551,16 @@ functions.
 Behaviour is undefined if arguments on the stack are of different types
 compared to the specified types.
 
-\subsubsection{\texttt{call.t.p}: tail call primitive function}
-\label{sec:orgd22c74d}
-Format: \texttt{0x43 <id: u8> <numargs: u8>} (3 bytes)
+\subsubsection{\texorpdfstring{\texttt{call.t.p}: tail call primitive
+function}{call.t.p: tail call primitive function}}
 
-Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
+Format:
+\texttt{0x43\ \textless{}id:\ u8\textgreater{}\ \textless{}numargs:\ u8\textgreater{}}
+(3 bytes)
 
-Stack after: (the stack is destroyed)
-
-Pops the arguments to be passed to the function off the stack in reverse
-order. That is, pop the last argument, followed by the second last, and
-so on, until the first argument.
-
-Calls the primitive function with the given \texttt{id}. The return value of
-the primitive function will become the return value of the current
-function, and execution returns to the caller of the current function.
-
-The types of the arguments are as specified in the list of primitive
-functions.
-
-Behaviour is undefined if arguments on the stack are of different types
-compared to the specified types.
-
-\subsubsection{\texttt{call.v}: call VM-internal function/native function}
-\label{sec:org008ae6e}
-Format: \texttt{0x44 <id: u8> <numargs: u8>} (3 bytes)
-
-Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
-
-Stack after: \ldots{}, \texttt{<r>} \(\blacksquare\)
-
-Pops the arguments to be passed to the function off the stack in reverse
-order. That is, pop the last argument, followed by the second last, and
-so on, until the first argument.
-
-Calls the VM-internal function with the given \texttt{id}, and then pushes the
-return value of the function onto the stack.
-
-VM-internal functions are specified by the VM implementation.
-
-Behaviour is undefined if arguments on the stack are of different types
-compared to the specified types.
-
-\subsubsection{\texttt{call.t.v}: tail call VM-internal function/native function}
-\label{sec:org22cfce9}
-Format: \texttt{0x45 <id: u8> <numargs: u8>} (3 bytes)
-
-Stack before: \ldots{}, \texttt{<a1>}, \texttt{<a2>}, \ldots{}, \texttt{<aN>} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}a1\textgreater{}},
+\texttt{\textless{}a2\textgreater{}}, \ldots,
+\texttt{\textless{}aN\textgreater{}} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
@@ -1271,109 +1568,163 @@ Pops the arguments to be passed to the function off the stack in reverse
 order. That is, pop the last argument, followed by the second last, and
 so on, until the first argument.
 
-Calls the VM-internal function with the given \texttt{id}. The return value of
-the VM-internal function will become the return value of the current
-function, and execution returns to the caller of the current function.
-
-VM-internal functions are specified by the VM implementation.
-
-Behaviour is undefined if arguments on the stack are of different types
-compared to the specified types.
-
-\subsubsection{\texttt{ret.g}: return boxed value}
-\label{sec:org5c86ae1}
-Format: \texttt{0x46}
-
-Stack before: \ldots{}, \texttt{<retval>: boxed} \(\blacksquare\)
-
-Stack after: (the stack is destroyed)
-
-Pops \texttt{retval} off the stack. Makes \texttt{retval} the return value of the
-current function, and returns execution to the caller of the current
+Calls the primitive function with the given \texttt{id}. The return
+value of the primitive function will become the return value of the
+current function, and execution returns to the caller of the current
 function.
 
-A fault occurs if the current function's signature indicates that the
-type of the return value is not a boxed value.
+The types of the arguments are as specified in the list of primitive
+functions.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texorpdfstring{\texttt{call.v}: call VM-internal
+function/native
+function}{call.v: call VM-internal function/native function}}
+
+Format:
+\texttt{0x44\ \textless{}id:\ u8\textgreater{}\ \textless{}numargs:\ u8\textgreater{}}
+(3 bytes)
+
+Stack before: \ldots, \texttt{\textless{}a1\textgreater{}},
+\texttt{\textless{}a2\textgreater{}}, \ldots,
+\texttt{\textless{}aN\textgreater{}} \(\blacksquare\)
+
+Stack after: \ldots, \texttt{\textless{}r\textgreater{}}
+\(\blacksquare\)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the VM-internal function with the given \texttt{id}, and then
+pushes the return value of the function onto the stack.
+
+VM-internal functions are specified by the VM implementation.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texorpdfstring{\texttt{call.t.v}: tail call VM-internal
+function/native
+function}{call.t.v: tail call VM-internal function/native function}}
+
+Format:
+\texttt{0x45\ \textless{}id:\ u8\textgreater{}\ \textless{}numargs:\ u8\textgreater{}}
+(3 bytes)
+
+Stack before: \ldots, \texttt{\textless{}a1\textgreater{}},
+\texttt{\textless{}a2\textgreater{}}, \ldots,
+\texttt{\textless{}aN\textgreater{}} \(\blacksquare\)
+
+Stack after: (the stack is destroyed)
+
+Pops the arguments to be passed to the function off the stack in reverse
+order. That is, pop the last argument, followed by the second last, and
+so on, until the first argument.
+
+Calls the VM-internal function with the given \texttt{id}. The return
+value of the VM-internal function will become the return value of the
+current function, and execution returns to the caller of the current
+function.
+
+VM-internal functions are specified by the VM implementation.
+
+Behaviour is undefined if arguments on the stack are of different types
+compared to the specified types.
+
+\subsubsection{\texorpdfstring{\texttt{ret.g}: return boxed
+value}{ret.g: return boxed value}}
+
+Format: \texttt{0x46}
+
+Stack before: \ldots, \texttt{\textless{}retval\textgreater{}:\ boxed}
+\(\blacksquare\)
+
+Stack after: (the stack is destroyed)
+
+Pops \texttt{retval} off the stack. Makes \texttt{retval} the return
+value of the current function, and returns execution to the caller of
+the current function.
 
 Behaviour is undefined if \texttt{retval} is not a boxed value.
 
-\subsubsection{\texttt{ret.f}: return number}
-\label{sec:org24d7891}
+\subsubsection{\texorpdfstring{\texttt{ret.f}: return
+number}{ret.f: return number}}
+
 Format: \texttt{0x47}
 
-Stack before: \ldots{}, \texttt{<retval>: number} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}retval\textgreater{}:\ number}
+\(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
-Pops \texttt{retval} off the stack. Makes \texttt{retval} the return value of the
-current function, and returns execution to the caller of the current
-function.
-
-A fault occurs if the current function's signature indicates that the
-type of the return value is not a number.
+Pops \texttt{retval} off the stack. Makes \texttt{retval} the return
+value of the current function, and returns execution to the caller of
+the current function.
 
 Behaviour is undefined if \texttt{retval} is not a number.
 
-\subsubsection{\texttt{ret.b}: return boolean}
-\label{sec:org489d37c}
+\subsubsection{\texorpdfstring{\texttt{ret.b}: return
+boolean}{ret.b: return boolean}}
+
 Format: \texttt{0x48}
 
-Stack before: \ldots{}, \texttt{<retval>: boolean} \(\blacksquare\)
+Stack before: \ldots, \texttt{\textless{}retval\textgreater{}:\ boolean}
+\(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
-Pops \texttt{retval} off the stack. Makes \texttt{retval} the return value of the
-current function, and returns execution to the caller of the current
-function.
-
-A fault occurs if the current function's signature indicates that the
-type of the return value is not a boolean.
+Pops \texttt{retval} off the stack. Makes \texttt{retval} the return
+value of the current function, and returns execution to the caller of
+the current function.
 
 Behaviour is undefined if \texttt{retval} is not a boolean.
 
-\subsubsection{\texttt{ret.u}: return undefined}
-\label{sec:org4462eb4}
+\subsubsection{\texorpdfstring{\texttt{ret.u}: return
+undefined}{ret.u: return undefined}}
+
 Format: \texttt{0x49}
 
 Stack before: \ldots{} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
-Makes \texttt{undefined} the return value of the current function, and returns
-execution to the caller of the current function.
+Makes \texttt{undefined} the return value of the current function, and
+returns execution to the caller of the current function.
 
-A fault occurs if the current function's signature indicates that the
-type of the return value is not undefined.
+\subsubsection{\texorpdfstring{\texttt{ret.n}: return
+null}{ret.n: return null}}
 
-\subsubsection{\texttt{ret.n}: return null}
-\label{sec:org02d0940}
 Format: \texttt{0x4A}
 
 Stack before: \ldots{} \(\blacksquare\)
 
 Stack after: (the stack is destroyed)
 
-Makes \texttt{null} the return value of the current function, and returns
-execution to the caller of the current function.
+Makes \texttt{null} the return value of the current function, and
+returns execution to the caller of the current function.
 
-A fault occurs if the current function's signature indicates that the
-type of the return value is not undefined.
+\subsubsection{\texorpdfstring{\texttt{dup}: duplicate top of
+stack}{dup: duplicate top of stack}}
 
-\subsubsection{\texttt{dup}: duplicate top of stack}
-\label{sec:orgde7ff7a}
 Format: \texttt{0x4B}
 
-Stack before: \ldots{} \texttt{<value>} \(\blacksquare\)
+Stack before: \ldots{} \texttt{\textless{}value\textgreater{}}
+\(\blacksquare\)
 
-Stack after: \ldots{} \texttt{<value>}, \texttt{<value>} \(\blacksquare\)
+Stack after: \ldots{} \texttt{\textless{}value\textgreater{}},
+\texttt{\textless{}value\textgreater{}} \(\blacksquare\)
 
 Pushes a copy of the topmost value on the stack onto the stack.
 
 A fault occurs if the stack is full, or the stack is empty.
 
-\subsubsection{\texttt{newenv}: create new environment}
-\label{sec:orgb7d0128}
-Format: \texttt{0x4C <size: u8>} (2 bytes)
+\subsubsection{\texorpdfstring{\texttt{newenv}: create new
+environment}{newenv: create new environment}}
+
+Format: \texttt{0x4C\ \textless{}size:\ u8\textgreater{}} (2 bytes)
 
 Does not modify the stack.
 
@@ -1381,8 +1732,9 @@ Creates a new environment whose parent is the current environment and
 with \texttt{size} entries. Sets the current environment to the new
 environment.
 
-\subsubsection{\texttt{popenv}: pop environment}
-\label{sec:org4cc850b}
+\subsubsection{\texorpdfstring{\texttt{popenv}: pop
+environment}{popenv: pop environment}}
+
 Format: \texttt{0x4D}
 
 Does not modify the stack.
@@ -1391,207 +1743,290 @@ Sets the current environment to be the parent of the current
 environment.
 
 \subsection{Primitive functions}
-\label{sec:org22a9c67}
+
 The functions below correspond to the functions defined in the
-\href{https://sicp.comp.nus.edu.sg/source/source\_4/}{Source language
+\href{https://sicp.comp.nus.edu.sg/source/source_4/}{Source language
 documentation}.
 
-The behaviours of \texttt{display} and \texttt{error} are implementation-defined.
-
-\begin{itemize}
-\item 0x00 accumulate
-
-\item 0x01 append
-
-\item 0x02 array\textsubscript{length}
-
-\item 0x03 build\textsubscript{list}
-
-\item 0x04 build\textsubscript{stream}
-
-\item 0x05 display
-
-\item 0x06 draw\textsubscript{data}
-
-\item 0x07 enum\textsubscript{list}
-
-\item 0x08 enum\textsubscript{stream}
-
-\item 0x09 equal
-
-\item 0x0a error
-
-\item 0x0b eval\textsubscript{stream}
-
-\item 0x0c filter
-
-\item 0x0d for\textsubscript{each}
-
-\item 0x0e head
-
-\item 0x0f integers\textsubscript{from}
-
-\item 0x10 is\textsubscript{array}
-
-\item 0x11 is\textsubscript{boolean}
-
-\item 0x12 is\textsubscript{function}
-
-\item 0x13 is\textsubscript{list}
-
-\item 0x14 is\textsubscript{null}
-
-\item 0x15 is\textsubscript{number}
-
-\item 0x16 is\textsubscript{pair}
-
-\item 0x17 is\textsubscript{stream}
-
-\item 0x18 is\textsubscript{string}
-
-\item 0x19 is\textsubscript{undefined}
-
-\item 0x1a length
-
-\item 0x1b list
-
-\item 0x1c list\textsubscript{ref}
-
-\item 0x1d list\textsubscript{to}\textsubscript{stream}
-
-\item 0x1e list\textsubscript{to}\textsubscript{string}
-
-\item 0x1f map
-
-\item 0x20 math\textsubscript{abs}
-
-\item 0x21 math\textsubscript{acos}
-
-\item 0x22 math\textsubscript{acosh}
-
-\item 0x23 math\textsubscript{asin}
-
-\item 0x24 math\textsubscript{asinh}
-
-\item 0x25 math\textsubscript{atan}
-
-\item 0x26 math\textsubscript{atan2}
-
-\item 0x27 math\textsubscript{atanh}
-
-\item 0x28 math\textsubscript{cbrt}
-
-\item 0x29 math\textsubscript{ceil}
-
-\item 0x2a math\textsubscript{clz32}
-
-\item 0x2b math\textsubscript{cos}
-
-\item 0x2c math\textsubscript{cosh}
-
-\item 0x2d math\textsubscript{exp}
-
-\item 0x2e math\textsubscript{expm1}
-
-\item 0x2f math\textsubscript{floor}
-
-\item 0x30 math\textsubscript{fround}
-
-\item 0x31 math\textsubscript{hypot}
-
-\item 0x32 math\textsubscript{imul}
-
-\item 0x33 math\textsubscript{log}
-
-\item 0x34 math\textsubscript{log1p}
-
-\item 0x35 math\textsubscript{log2}
-
-\item 0x36 math\textsubscript{log10}
-
-\item 0x37 math\textsubscript{max}
-
-\item 0x38 math\textsubscript{min}
-
-\item 0x39 math\textsubscript{pow}
-
-\item 0x3a math\textsubscript{random}
-
-\item 0x3b math\textsubscript{round}
-
-\item 0x3c math\textsubscript{sign}
-
-\item 0x3d math\textsubscript{sin}
-
-\item 0x3e math\textsubscript{sinh}
-
-\item 0x3f math\textsubscript{sqrt}
-
-\item 0x40 math\textsubscript{tan}
-
-\item 0x41 math\textsubscript{tanh}
-
-\item 0x42 math\textsubscript{trunc}
-
-\item 0x43 member
-
-\item 0x44 pair
-
-\item 0x45 parse\textsubscript{int}
-
-\item 0x46 remove
-
-\item 0x47 remove\textsubscript{all}
-
-\item 0x48 reverse
-
-\item 0x49 runtime
-
-\item 0x4a set\textsubscript{head}
-
-\item 0x4b set\textsubscript{tail}
-
-\item 0x4c stream
-
-\item 0x4d stream\textsubscript{append}
-
-\item 0x4e stream\textsubscript{filter}
-
-\item 0x4f stream\textsubscript{for}\textsubscript{each}
-
-\item 0x50 stream\textsubscript{length}
-
-\item 0x51 stream\textsubscript{map}
-
-\item 0x52 stream\textsubscript{member}
-
-\item 0x53 stream\textsubscript{ref}
-
-\item 0x54 stream\textsubscript{remove}
-
-\item 0x55 stream\textsubscript{remove}\textsubscript{all}
-
-\item 0x56 stream\textsubscript{reverse}
-
-\item 0x57 stream\textsubscript{tail}
-
-\item 0x58 stream\textsubscript{to}\textsubscript{list}
-
-\item 0x59 tail
-
-\item 0x60 stringify
-\end{itemize}
+The behaviours of \texttt{display} and \texttt{error} are
+implementation-defined.
+
+\begin{tightlist}
+\item
+  \texttt{0x00}: \texttt{accumulate}
+\item
+  \texttt{0x01}: \texttt{append}
+\item
+  \texttt{0x02}: \texttt{array\_length}
+\item
+  \texttt{0x03}: \texttt{build\_list}
+\item
+  \texttt{0x04}: \texttt{build\_stream}
+\item
+  \texttt{0x05}: \texttt{display}
+\item
+  \texttt{0x06}: \texttt{draw\_data}
+\item
+  \texttt{0x07}: \texttt{enum\_list}
+\item
+  \texttt{0x08}: \texttt{enum\_stream}
+\item
+  \texttt{0x09}: \texttt{equal}
+\item
+  \texttt{0x0a}: \texttt{error}
+\item
+  \texttt{0x0b}: \texttt{eval\_stream}
+\item
+  \texttt{0x0c}: \texttt{filter}
+\item
+  \texttt{0x0d}: \texttt{for\_each}
+\item
+  \texttt{0x0e}: \texttt{head}
+\item
+  \texttt{0x0f}: \texttt{integers\_from}
+\item
+  \texttt{0x10}: \texttt{is\_array}
+\item
+  \texttt{0x11}: \texttt{is\_boolean}
+\item
+  \texttt{0x12}: \texttt{is\_function}
+\item
+  \texttt{0x13}: \texttt{is\_list}
+\item
+  \texttt{0x14}: \texttt{is\_null}
+\item
+  \texttt{0x15}: \texttt{is\_number}
+\item
+  \texttt{0x16}: \texttt{is\_pair}
+\item
+  \texttt{0x17}: \texttt{is\_stream}
+\item
+  \texttt{0x18}: \texttt{is\_string}
+\item
+  \texttt{0x19}: \texttt{is\_undefined}
+\item
+  \texttt{0x1a}: \texttt{length}
+\item
+  \texttt{0x1b}: \texttt{list}
+\item
+  \texttt{0x1c}: \texttt{list\_ref}
+\item
+  \texttt{0x1d}: \texttt{list\_to\_stream}
+\item
+  \texttt{0x1e}: \texttt{list\_to\_string}
+\item
+  \texttt{0x1f}: \texttt{map}
+\item
+  \texttt{0x20}: \texttt{math\_abs}
+\item
+  \texttt{0x21}: \texttt{math\_acos}
+\item
+  \texttt{0x22}: \texttt{math\_acosh}
+\item
+  \texttt{0x23}: \texttt{math\_asin}
+\item
+  \texttt{0x24}: \texttt{math\_asinh}
+\item
+  \texttt{0x25}: \texttt{math\_atan}
+\item
+  \texttt{0x26}: \texttt{math\_atan2}
+\item
+  \texttt{0x27}: \texttt{math\_atanh}
+\item
+  \texttt{0x28}: \texttt{math\_cbrt}
+\item
+  \texttt{0x29}: \texttt{math\_ceil}
+\item
+  \texttt{0x2a}: \texttt{math\_clz32}
+\item
+  \texttt{0x2b}: \texttt{math\_cos}
+\item
+  \texttt{0x2c}: \texttt{math\_cosh}
+\item
+  \texttt{0x2d}: \texttt{math\_exp}
+\item
+  \texttt{0x2e}: \texttt{math\_expm1}
+\item
+  \texttt{0x2f}: \texttt{math\_floor}
+\item
+  \texttt{0x30}: \texttt{math\_fround}
+\item
+  \texttt{0x31}: \texttt{math\_hypot}
+\item
+  \texttt{0x32}: \texttt{math\_imul}
+\item
+  \texttt{0x33}: \texttt{math\_log}
+\item
+  \texttt{0x34}: \texttt{math\_log1p}
+\item
+  \texttt{0x35}: \texttt{math\_log2}
+\item
+  \texttt{0x36}: \texttt{math\_log10}
+\item
+  \texttt{0x37}: \texttt{math\_max}
+\item
+  \texttt{0x38}: \texttt{math\_min}
+\item
+  \texttt{0x39}: \texttt{math\_pow}
+\item
+  \texttt{0x3a}: \texttt{math\_random}
+\item
+  \texttt{0x3b}: \texttt{math\_round}
+\item
+  \texttt{0x3c}: \texttt{math\_sign}
+\item
+  \texttt{0x3d}: \texttt{math\_sin}
+\item
+  \texttt{0x3e}: \texttt{math\_sinh}
+\item
+  \texttt{0x3f}: \texttt{math\_sqrt}
+\item
+  \texttt{0x40}: \texttt{math\_tan}
+\item
+  \texttt{0x41}: \texttt{math\_tanh}
+\item
+  \texttt{0x42}: \texttt{math\_trunc}
+\item
+  \texttt{0x43}: \texttt{member}
+\item
+  \texttt{0x44}: \texttt{pair}
+\item
+  \texttt{0x45}: \texttt{parse\_int}
+\item
+  \texttt{0x46}: \texttt{remove}
+\item
+  \texttt{0x47}: \texttt{remove\_all}
+\item
+  \texttt{0x48}: \texttt{reverse}
+\item
+  \texttt{0x49}: \texttt{runtime}
+\item
+  \texttt{0x4a}: \texttt{set\_head}
+\item
+  \texttt{0x4b}: \texttt{set\_tail}
+\item
+  \texttt{0x4c}: \texttt{stream}
+\item
+  \texttt{0x4d}: \texttt{stream\_append}
+\item
+  \texttt{0x4e}: \texttt{stream\_filter}
+\item
+  \texttt{0x4f}: \texttt{stream\_for\_each}
+\item
+  \texttt{0x50}: \texttt{stream\_length}
+\item
+  \texttt{0x51}: \texttt{stream\_map}
+\item
+  \texttt{0x52}: \texttt{stream\_member}
+\item
+  \texttt{0x53}: \texttt{stream\_ref}
+\item
+  \texttt{0x54}: \texttt{stream\_remove}
+\item
+  \texttt{0x55}: \texttt{stream\_remove\_all}
+\item
+  \texttt{0x56}: \texttt{stream\_reverse}
+\item
+  \texttt{0x57}: \texttt{stream\_tail}
+\item
+  \texttt{0x58}: \texttt{stream\_to\_list}
+\item
+  \texttt{0x59}: \texttt{tail}
+\item
+  \texttt{0x60}: \texttt{stringify}
+\end{tightlist}
 
 \subsection{Machine-parseable instruction set}
-\label{sec:org5fffbe9}
+
 A JSON dump of the instruction set follows.
 
 \begin{verbatim}
-[[0, "nop", "no-op"], [1, "ldc.i", "load constant integer"], [2, "lgc.i", "load boxed constant integer"], [3, "ldc.f32", "load constant number (single-precision)"], [4, "lgc.f32", "load boxed constant number (single-precision)"], [5, "ldc.f64", "load constant number (double-precision)"], [6, "lgc.f64", "load boxed constant number (double-precision)"], [7, "ldc.b.0", "load constant false"], [8, "ldc.b.1", "load constant true"], [9, "lgc.b.0", "load boxed constant false"], [10, "lgc.b.1", "load boxed constant true"], [11, "lgc.u", "load boxed constant undefined"], [12, "lgc.n", "load boxed constant null"], [13, "lgc.s", "load constant string"], [14, "pop.g", "pop boxed value from stack"], [15, "pop.b", "pop boolean from stack"], [16, "pop.f", "pop number from stack"], [17, "add.g", "add boxed values"], [18, "add.f", "add numbers"], [19, "sub.g", "subtract boxed values"], [20, "sub.f", "subtract numbers"], [21, "mul.g", "multiply boxed values"], [22, "mul.f", "multiply numbers"], [23, "div.g", "divide boxed values"], [24, "div.f", "divide numbers"], [25, "mod.g", "modulo boxed values"], [26, "mod.f", "modulo numbers"], [27, "not.g", "negate boxed value"], [28, "not.b", "negate boolean"], [29, "lt.g", "less than, boxed operands"], [30, "lt.f", "less than, number operands"], [31, "gt.g", "greater than, boxed operands"], [32, "gt.f", "greater than, number operands"], [33, "le.g", "less than or equal to, boxed operands"], [34, "le.f", "less than or equal to, number operands"], [35, "ge.g", "greater than or equal to, boxed operands"], [36, "ge.f", "greater than or equal to, number operands"], [37, "eq.g", "equal, boxed operands"], [38, "eq.f", "equal, number operands"], [39, "eq.b", "equal, boolean operands"], [40, "new.c", "create function"], [41, "new.a", "create array"], [42, "ldl.g", "load boxed value from current environment"], [43, "ldl.f", "load number from current environment"], [44, "ldl.b", "load boolean from current environment"], [45, "stl.g", "store boxed value into current environment"], [46, "stl.b", "store boolean into current environment"], [47, "stl.f", "store number into current environment"], [48, "ldp.g", "load boxed value from (parent) environment"], [49, "ldp.f", "load number from (parent) environment"], [50, "ldp.b", "load boolean from (parent) environment"], [51, "stp.g", "store boxed value into (parent) environment"], [52, "stp.b", "store boolean into (parent) environment"], [53, "stp.f", "store number into (parent) environment"], [54, "lda.g", "load boxed value from array"], [55, "lda.b", "load boolean from array"], [56, "lda.f", "load number from array"], [57, "sta.g", "store boxed value into array"], [58, "sta.b", "store boolean into array"], [59, "sta.f", "store number into array"], [60, "br.t", "branch if true"], [61, "br.f", "branch if false"], [62, "br", "branch"], [63, "jmp", "jump"], [64, "call", "call function"], [65, "call.t", "tail call function"], [66, "call.p", "call primitive function"], [67, "call.t.p", "tail call primitive function"], [68, "call.v", "call VM-internal function/native function"], [69, "call.t.v", "tail call VM-internal function/native function"], [70, "ret.g", "return boxed value"], [71, "ret.f", "return number"], [72, "ret.b", "return boolean"], [73, "ret.u", "return undefined"], [74, "ret.n", "return null"], [75, "dup", "duplicate top of stack"]]
+[
+  [0, "nop", "no-op"],
+  [1, "ldc.i", "load constant integer"],
+  [2, "lgc.i", "load boxed constant integer"],
+  [3, "ldc.f32", "load constant number (single-precision)"],
+  [4, "lgc.f32", "load boxed constant number (single-precision)"],
+  [5, "ldc.f64", "load constant number (double-precision)"],
+  [6, "lgc.f64", "load boxed constant number (double-precision)"],
+  [7, "ldc.b.0", "load constant false"],
+  [8, "ldc.b.1", "load constant true"],
+  [9, "lgc.b.0", "load boxed constant false"],
+  [10, "lgc.b.1", "load boxed constant true"],
+  [11, "lgc.u", "load boxed constant undefined"],
+  [12, "lgc.n", "load boxed constant null"],
+  [13, "lgc.s", "load constant string"],
+  [14, "pop.g", "pop boxed value from stack"],
+  [15, "pop.b", "pop boolean from stack"],
+  [16, "pop.f", "pop number from stack"],
+  [17, "add.g", "add boxed values"],
+  [18, "add.f", "add numbers"],
+  [19, "sub.g", "subtract boxed values"],
+  [20, "sub.f", "subtract numbers"],
+  [21, "mul.g", "multiply boxed values"],
+  [22, "mul.f", "multiply numbers"],
+  [23, "div.g", "divide boxed values"],
+  [24, "div.f", "divide numbers"],
+  [25, "mod.g", "modulo boxed values"],
+  [26, "mod.f", "modulo numbers"],
+  [27, "not.g", "negate boxed value"],
+  [28, "not.b", "negate boolean"],
+  [29, "lt.g", "less than, boxed operands"],
+  [30, "lt.f", "less than, number operands"],
+  [31, "gt.g", "greater than, boxed operands"],
+  [32, "gt.f", "greater than, number operands"],
+  [33, "le.g", "less than or equal to, boxed operands"],
+  [34, "le.f", "less than or equal to, number operands"],
+  [35, "ge.g", "greater than or equal to, boxed operands"],
+  [36, "ge.f", "greater than or equal to, number operands"],
+  [37, "eq.g", "equal, boxed operands"],
+  [38, "eq.f", "equal, number operands"],
+  [39, "eq.b", "equal, boolean operands"],
+  [40, "new.c", "create function"],
+  [41, "new.a", "create array"],
+  [42, "ldl.g", "load boxed value from current environment"],
+  [43, "ldl.f", "load number from current environment"],
+  [44, "ldl.b", "load boolean from current environment"],
+  [45, "stl.g", "store boxed value into current environment"],
+  [46, "stl.b", "store boolean into current environment"],
+  [47, "stl.f", "store number into current environment"],
+  [48, "ldp.g", "load boxed value from (parent) environment"],
+  [49, "ldp.f", "load number from (parent) environment"],
+  [50, "ldp.b", "load boolean from (parent) environment"],
+  [51, "stp.g", "store boxed value into (parent) environment"],
+  [52, "stp.b", "store boolean into (parent) environment"],
+  [53, "stp.f", "store number into (parent) environment"],
+  [54, "lda.g", "load boxed value from array"],
+  [55, "lda.b", "load boolean from array"],
+  [56, "lda.f", "load number from array"],
+  [57, "sta.g", "store boxed value into array"],
+  [58, "sta.b", "store boolean into array"],
+  [59, "sta.f", "store number into array"],
+  [60, "br.t", "branch if true"],
+  [61, "br.f", "branch if false"],
+  [62, "br", "branch"],
+  [63, "jmp", "jump"],
+  [64, "call", "call function"],
+  [65, "call.t", "tail call function"],
+  [66, "call.p", "call primitive function"],
+  [67, "call.t.p", "tail call primitive function"],
+  [68, "call.v", "call VM-internal function/native function"],
+  [69, "call.t.v", "tail call VM-internal function/native function"],
+  [70, "ret.g", "return boxed value"],
+  [71, "ret.f", "return number"],
+  [72, "ret.b", "return boolean"],
+  [73, "ret.u", "return undefined"],
+  [74, "ret.n", "return null"],
+  [75, "dup", "duplicate top of stack"],
+  [76, "newenv", "create new environment"],
+  [77, "popenv", "pop environment"],
+  [78, "new.c.p", "create primitive function object"],
+  [79, "new.c.v", "create VM-internal function object"],
+  [80, "neg.g", "negate boxed value"],
+  [81, "neg.f", "negate number"],
+  [82, "neq.g", "not equal, boxed operands"],
+  [83, "neq.f", "not equal, number operands"],
+  [84, "neq.b", "not equal, boolean operands"]
+]
 \end{verbatim}
-
-\label{org8222156}
-
-\label{orgc2bb649}
-Last updated 2020-03-23 14:15:24 +0800
 \end{document}
