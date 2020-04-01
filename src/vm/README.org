@@ -1,4 +1,4 @@
-#+OPTIONS: toc:nil H:4
+#+OPTIONS: toc:nil H:4 num:nil
 #+BEGIN_EXPORT html
 \(
 \newcommand{\qed}{$\Box$}
