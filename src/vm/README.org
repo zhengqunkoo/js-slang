@@ -317,3 +317,12 @@ The other rules for the transition function $\transition$ will not be covered in
 (make-variable-buffer-local 'org-export-filter-final-output-functions)
 (add-to-list 'org-export-filter-final-output-functions 'reveal-body-id-filter)
 #+END_SRC
+* Demo
+** Issue with concurrent execution
+#+REVEAL_HTML: <img class="stretch" src="ex1.gif">
+** Issue now solved by mutexes
+#+REVEAL_HTML: <img class="stretch" src="ex2.gif">
+** Issue with computations after concurrent execution
+#+REVEAL_HTML: <img class="stretch" src="ex3.gif">
+** Issue now solved by barrier
+#+REVEAL_HTML: <img class="stretch" src="ex4.gif">
