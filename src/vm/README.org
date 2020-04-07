@@ -107,6 +107,31 @@ $$(\langle \rangle, 0, \langle \rangle, \langle \rangle, \langle \rangle, 0)$$
 
 *** =EXECUTE= Rules
 
+**** Starting =EXECUTE=
+$$\Rule{s(\textit{pc}) = \texttt{EXECUTE n} \qquad \textit{to} > 0}{
+\begin{aligned}
+&((\textit{pc}_1, \textit{e}_1). \cdots .(\textit{pc}_n, \textit{e}_n).\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
+\transition &(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}.(\langle \rangle, \textit{pc}_1, \textit{e}_1, \langle \rangle).\\
+&\cdots .(\langle \rangle, \textit{pc}_n, \textit{e}_n, \langle \rangle), \textit{to}-1)
+\end{aligned}}$$
+#+BEGIN_NOTES
+Closures representing threads $t_i$ (two-tuples of $\textit{pc}_i$ and $\textit{e}_i$) on the operand stack are converted into threads $t_i$. Thread $t_i$ is a four-tuple of each thread $t_i$'s own $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$. Initially, thread $t_i$ has empty $\textit{os}_i$ and empty $\textit{rs}_i$.
+The thread that calls =concurrent_execute= also continues to execute concurrently with the other threads. This is shown by the $\textit{os}, \textit{pc}, \textit{e}, \textit{rs}$ being in the machine state after the transition arrow, and shown by the timeout decrementing.
+Note: we decrement timeout instead of setting a random timeout, since setting a random timeout makes starvation possible: the thread that only calls =concurrent_execute=, and calls =concurrent_execute= infinitely many times, will always be run.
+#+END_NOTES
+Thread $t_i$ is a four-tuple of $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$.
+
+**** Running thread
+$$\Rule{s(\textit{pc}) \neq \texttt{RET} \qquad \textit{to} > 0}{
+\begin{aligned}
+&(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
+\transition &(\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)
+\end{aligned}}$$
+#+BEGIN_NOTES
+where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements.
+#+END_NOTES
+where the primed values are just like normal VM code execution.
+
 **** Thread timeout
 $$\Rule{}{
 \begin{aligned}
@@ -121,17 +146,6 @@ The above rule assumes there is least one thread in the thread queue. To cover a
 To cover all cases, here is the rule for empty thread queue:
 $$\Rule{}{(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \langle \rangle, 0) \transition (\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \langle \rangle, c)}$$
 
-**** Running thread
-$$\Rule{s(\textit{pc}) \neq \texttt{RET} \qquad \textit{to} > 0}{
-\begin{aligned}
-&(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
-\transition &(\textit{os'}, \textit{pc'}, \textit{e'}, \textit{rs'}, \textit{tq}, \textit{to}-1)
-\end{aligned}}$$
-#+BEGIN_NOTES
-where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements.
-#+END_NOTES
-where the primed values are just like normal VM code execution.
-
 **** Running thread, returning from function
 $$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} \neq \langle \rangle}{
 \begin{aligned}
@@ -142,20 +156,6 @@ $$\Rule{s(\textit{pc}) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs} 
 where the primed values are just like normal VM code execution, and the timeout is initially nonzero, and then decrements. Note: the thread may execute the =RET= statement inside a function, and the thread does the normal thing of popping $\textit{rs}$ and so on.
 #+END_NOTES
 The thread may execute the =RET= statement inside a function, and the thread does the normal thing of popping $\textit{rs}$ and so on.
-
-**** Starting =EXECUTE=
-$$\Rule{s(\textit{pc}) = \texttt{EXECUTE n} \qquad \textit{to} > 0}{
-\begin{aligned}
-&((\textit{pc}_1, \textit{e}_1). \cdots .(\textit{pc}_n, \textit{e}_n).\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}, \textit{to})\\
-\transition &(\textit{os}, \textit{pc}, \textit{e}, \textit{rs}, \textit{tq}.(\langle \rangle, \textit{pc}_1, \textit{e}_1, \langle \rangle).\\
-&\cdots .(\langle \rangle, \textit{pc}_n, \textit{e}_n, \langle \rangle), \textit{to}-1)
-\end{aligned}}$$
-#+BEGIN_NOTES
-Closures representing threads $t_i$ (two-tuples of $\textit{pc}_i$ and $\textit{e}_i$) on the operand stack are converted into threads $t_i$. Thread $t_i$ is a four-tuple of each thread $t_i$'s own $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$. Initially, thread $t_i$ has empty $\textit{os}_i$ and empty $\textit{rs}_i$.
-The thread that calls =concurrent_execute= also continues to execute concurrently with the other threads. This is shown by the $\textit{os}, \textit{pc}, \textit{e}, \textit{rs}$ being in the machine state after the transition arrow, and shown by the timeout decrementing.
-Note: we decrement timeout instead of setting a random timeout, since setting a random timeout makes starvation possible: the thread that only calls =concurrent_execute=, and calls =concurrent_execute= infinitely many times, will always be run.
-#+END_NOTES
-Thread $t_i$ is a four-tuple of $\textit{os}_i$, $\textit{pc}_i$, $\textit{e}_i$, and $\textit{rs}_i$.
 
 **** Returning from thread
 $$\Rule{s(\textit{pc}_1) = \texttt{RET} \qquad \textit{to} > 0 \qquad \textit{rs}_1 = \langle \rangle}{
